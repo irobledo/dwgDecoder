@@ -71,6 +71,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="dwgDecoder.cs" />
+    <Compile Include="dwgElementos\dwgCapa.cs" />
+    <Compile Include="dwgElementos\dwgEntidadBase.cs" />
+    <Compile Include="dwgElementos\dwgFile.cs" />
+    <Compile Include="dwgElementos\dwgLinea.cs" />
+    <Compile Include="dwgElementos\dwgPolylinea.cs" />
+    <Compile Include="dwgElementos\dwgPunto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
