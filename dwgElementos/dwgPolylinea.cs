@@ -5,7 +5,7 @@ using System.Text;
 
 namespace fi.upm.es.dwgDecoder.dwgElementos
 {
-    class dwgPolylinea : dwgEntidadBase
+    public class dwgPolylinea : dwgEntidadBase
     {
     }
 }

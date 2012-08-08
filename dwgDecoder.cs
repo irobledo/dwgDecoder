@@ -8,6 +8,7 @@ using System;
 using System.Xml.Serialization;
 
 using fi.upm.es.dwgDecoder.dwgElementos;
+using fi.upm.es.dwgDecoder.tools;
  
 namespace fi.upm.es.dwgDecoder
 {
@@ -24,7 +25,7 @@ namespace fi.upm.es.dwgDecoder
     // - ID: IDENTIFICADOR UNIVOCO
     // - COLOR
     // - TIPO DE LINEA
-    // - GROSOS DE LA LINEA
+    // - GROSOR DE LA LINEA
     // - CAPA A LA QUE PERTENECEN
 
     // 7.ATRIBUTOS PARA LA CAPA
@@ -50,28 +51,30 @@ namespace fi.upm.es.dwgDecoder
 
                     dwgCapa capa = new dwgCapa();
                     capa.objectId = acObjId;
+                    capa.handleId = acLyrTblRec.Handle;
+
                     capa.nombreCapa = acLyrTblRec.Name;
+                    capa.descripcionCapa = acLyrTblRec.Description;
+                    
                     capa.colorCapa = acLyrTblRec.Color;
                     capa.color_R = capa.colorCapa.Red;
                     capa.color_G = capa.colorCapa.Green;
                     capa.color_B = capa.colorCapa.Blue;
 
+                    capa.oculta = acLyrTblRec.IsHidden;
+                    capa.bloqueada = acLyrTblRec.IsLocked;
+                    capa.apagada = acLyrTblRec.IsOff;
+                    capa.enUso = acLyrTblRec.IsUsed;
+                    
+                    capa.default_gruesoLinea = acLyrTblRec.LineWeight;
+
                     dwgf.dwgCapas.Add(capa.objectId, capa);
 
-                    ed.WriteMessage("Capa:" + acLyrTblRec.Name);
-                    /*
-                    ;
-                    acLyrTblRec.Description;
-                    acLyrTblRec.Handle;
-                    acLyrTblRec.IsHidden;
-                    acLyrTblRec.IsLocked;
-                    acLyrTblRec.IsOff;
-                    acLyrTblRec.IsPersistent;
-                    acLyrTblRec.IsUsed;
-                    acLyrTblRec.Transparency;
-                    acLyrTblRec.LinetypeObjectId;
-                    acLyrTblRec.LineWeight;
-                    */
+                    ed.WriteMessage("Capa:" + acLyrTblRec.Name);                     
+                    
+                    // acLyrTblRec.LinetypeObjectId;
+                    // acLyrTblRec.IsPersistent;
+                    // acLyrTblRec.Transparency;             
                 }
 
                 // Open the Block table for read
@@ -83,26 +86,30 @@ namespace fi.upm.es.dwgDecoder
                 // Step through the Block table record
                 foreach (ObjectId acObjId in acBlkTblRec)
                 {
-                    switch (acObjId.GetType().ToString())
+                    switch (acObjId.ObjectClass.DxfName)
                     {
-                        case "": 
+                        case "LWPOLYLINE":
+                            dwgPolylinea poli = new dwgPolylinea();
+                            poli.objId = acObjId;
+                            poli.capaId = acObjId.Database.LayerTableId;
+                            dwgf.dwgPolylineas.Add(poli.objId, poli);
                             break;
                         default:
                             ed.WriteMessage(acObjId.ObjectClass.ClassVersion.ToString());                                
                             break;
                     }
-
+                    /*
                     ed.WriteMessage("\nDXF name: " + acObjId.ObjectClass.DxfName);
                     ed.WriteMessage("\nObjectID: " + acObjId.ToString());
                     ed.WriteMessage("\nHandle: " + acObjId.Handle.ToString());
                     ed.WriteMessage("\nLayerTableId:" + acObjId.Database.LayerTableId.ToString());
                     ed.WriteMessage("\nLayerZero:" + acObjId.Database.LayerZero.ToString());
                     ed.WriteMessage("\n");
-                    
+                    */
                 }
             }
-            // XmlSerializer x = new XmlSerializer(dwgf.GetType());
-            // x.Serialize(Console.Out, dwgf);
+
+            exportXml.export2Xml(dwgf);
         }        
     }
 }
