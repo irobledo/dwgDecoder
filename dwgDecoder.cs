@@ -89,9 +89,10 @@ namespace fi.upm.es.dwgDecoder
                     switch (acObjId.ObjectClass.DxfName)
                     {
                         case "LWPOLYLINE":
+                            Entity ent = (Entity)t.GetObject(acObjId, OpenMode.ForRead);
                             dwgPolylinea poli = new dwgPolylinea();
                             poli.objId = acObjId;
-                            poli.capaId = acObjId.Database.LayerTableId;
+                            poli.capaId = ent.LayerId;
                             dwgf.dwgPolylineas.Add(poli.objId, poli);
                             break;
                         default:

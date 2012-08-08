@@ -53,31 +53,36 @@ namespace fi.upm.es.dwgDecoder.tools
             // NODO HIJO: capa
             // *********************************************
 	  
-            foreach (KeyValuePair<ObjectId,dwgCapa> pair in dwgf.dwgCapas)
+            foreach (dwgCapa cap in dwgf.dwgCapas.Values)
 	        {
                 XmlElement capa = xmldoc.CreateElement("capa");
                 xmlattribute = xmldoc.CreateAttribute("id");
-                xmlattribute.Value = pair.Value.objectId.ToString();
+                xmlattribute.Value = cap.objectId.ToString();
                 capa.Attributes.Append(xmlattribute);
 
                 xmlattribute = xmldoc.CreateAttribute("name");
-                xmlattribute.Value = pair.Value.nombreCapa;
+                xmlattribute.Value = cap.nombreCapa;
                 capa.Attributes.Append(xmlattribute);
 
                 xmlelement2.AppendChild(capa);
 
-                var polycapa = dwgf.dwgPolylineas.Values.Where(x => x.capaId == pair.Value.objectId);
-                
+                var polycapa = dwgf.dwgPolylineas.Values.Where(x => x.capaId.ToString() == cap.objectId.ToString());
+              
+            
                 foreach (dwgPolylinea obj in polycapa)
                 {
                     XmlElement linea = xmldoc.CreateElement("linea");
                     xmlattribute = xmldoc.CreateAttribute("id");
                     xmlattribute.Value = obj.objId.ToString();
                     linea.Attributes.Append(xmlattribute);
-                    capa.AppendChild(linea);     
+                
+                    xmlattribute = xmldoc.CreateAttribute("capaId");
+                    xmlattribute.Value = obj.capaId.ToString();
+                    linea.Attributes.Append(xmlattribute);
+                
+                    capa.AppendChild(linea);
                 }
             }
-
             try
             {
                 xmldoc.Save("c:\\prueba.xml");
