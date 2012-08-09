@@ -10,6 +10,7 @@ namespace fi.upm.es.dwgDecoder.dwgElementos
     public abstract class dwgEntidadBase
     {
         public ObjectId objId;
-        public ObjectId capaId;        
+        public ObjectId capaId;
+        public ObjectId parentId;
     }
 }
