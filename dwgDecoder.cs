@@ -78,10 +78,10 @@ namespace fi.upm.es.dwgDecoder
                 }
 
                 // Open the Block table for read
-                BlockTable acBlkTbl = (BlockTable) t.GetObject(db.BlockTableId,OpenMode.ForRead);
+                BlockTable acBlkTbl = (BlockTable) t.GetObject(db.BlockTableId,OpenMode.ForWrite);
  
                 // Open the Block table record Model space for read
-                BlockTableRecord acBlkTblRec = (BlockTableRecord) t.GetObject(acBlkTbl[BlockTableRecord.ModelSpace],OpenMode.ForRead);
+                BlockTableRecord acBlkTblRec = (BlockTableRecord) t.GetObject(acBlkTbl[BlockTableRecord.ModelSpace],OpenMode.ForWrite);
  
                 // Step through the Block table record
                 foreach (ObjectId acObjId in acBlkTblRec)
@@ -92,30 +92,32 @@ namespace fi.upm.es.dwgDecoder
                         case "POINT":
                         case "LINE":
                             dwgDecoder.ProcesarObjetos(acObjId, acBlkTbl, acBlkTblRec, t, dwgf);
+                            ed.WriteMessage("\nProcesado punto/linea: " + acObjId.ToString());
                             break;
                         case "LWPOLYLINE":
                             DBObjectCollection entitySet = new DBObjectCollection();
-                            // ent.Explode(entitySet);
-                            ed.WriteMessage("\nProcesada polylinea. Número de entidades a procesar: " + entitySet.Count.ToString());
-                            entitySet = dwgDecoder.ObtenerPuntosyLineas(ent,acBlkTbl);
-                            /*
+                            entitySet = dwgDecoder.ObtenerPuntosyLineas(ent,acBlkTbl,acBlkTblRec,t);
+                            ed.WriteMessage("\nProcesada polylinea: " +  acObjId.ToString());
+                            ed.WriteMessage("\nNúmero de entidades a procesar: " + entitySet.Count.ToString());
+                            
                             foreach (Entity ent2 in entitySet)
                             {
-                                ed.WriteMessage("\nNueva entidad - " + ent2.ObjectId + ":" + ent2.ObjectId.ObjectClass.DxfName);
+                                dwgDecoder.ProcesarObjetos(ent2.ObjectId, acBlkTbl, acBlkTblRec, t, dwgf);
+                                ed.WriteMessage("\nNueva entidad - " + ent2.ObjectId.ObjectClass.DxfName + ":" + ent2.ObjectId);
                             } 
-                            */
+                            
                             break;
                         case "ARC":
                             DBObjectCollection entitySet2 = new DBObjectCollection();
-                            ent.Explode(entitySet2);
-                            ed.WriteMessage("\nProcesado arco. Número de entidades a procesar: " + entitySet2.Count.ToString());
-                            entitySet2 = dwgDecoder.ObtenerPuntosyLineas(ent, acBlkTbl);
-                            /*
+                            entitySet2 = herramientasCurvas.curvaAlineas((Curve) ent, 5, acBlkTbl, acBlkTblRec, t);
+                            ed.WriteMessage("\nProcesado arco: " +  acObjId.ToString());
+                            ed.WriteMessage("\nNúmero de entidades a procesar: " + entitySet2.Count.ToString());
+                            
                             foreach (Entity ent2 in entitySet2)
                             {
                                 ed.WriteMessage("\nNueva entidad - " + ent2.ObjectId + ":" + ent2.ObjectId.ObjectClass.DxfName);
                             }
-                            */
+                            
                             break;                        
                         default:
                             ed.WriteMessage("\nTipo de objeto no reconocido por dwgDecoder.");
@@ -153,16 +155,11 @@ namespace fi.upm.es.dwgDecoder
                     linea.capaId = ent.LayerId;
                     DBPoint p_origen_0 = new DBPoint(lorigen.StartPoint);
                     DBPoint p_final_0 = new DBPoint(lorigen.EndPoint);
-
-                    using (Transaction t2 = Application.DocumentManager.MdiActiveDocument.Database.TransactionManager.StartTransaction())
-                    {
-                        BlockTableRecord acBlkTblRec2 = (BlockTableRecord)t2.GetObject(acBlkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite);
-                        acBlkTblRec2.AppendEntity(p_origen_0);
-                        acBlkTblRec2.AppendEntity(p_final_0);
-                        t2.AddNewlyCreatedDBObject(p_origen_0, true);
-                        t2.AddNewlyCreatedDBObject(p_final_0, true);
-                    }
-
+                    acBlkTblRec.AppendEntity(p_origen_0);
+                    acBlkTblRec.AppendEntity(p_final_0);
+                    t.AddNewlyCreatedDBObject(p_origen_0, true);
+                    t.AddNewlyCreatedDBObject(p_final_0, true);
+                    
                     dwgPunto p_origen_1 = new dwgPunto();
                     p_origen_1.objId = p_origen_0.ObjectId;
                     p_origen_1.coordenadas = p_origen_0.Position;
@@ -183,9 +180,10 @@ namespace fi.upm.es.dwgDecoder
                     {
                         dwgf.dwgPuntos.Add(p_final_1.objId, p_final_1);
                     }
-
-                    dwgf.dwgLineas.Add(linea.objId, linea);
-
+                    if (dwgf.dwgLineas.ContainsKey(linea.objId) == false)
+                    {
+                        dwgf.dwgLineas.Add(linea.objId, linea);
+                    }
                     ed.WriteMessage("\nProcesada linea: " + linea.objId.ToString());
                     break;
                 case "ARC":
@@ -205,7 +203,7 @@ namespace fi.upm.es.dwgDecoder
             return;
         }
 
-        private static DBObjectCollection ObtenerPuntosyLineas(Entity ent, BlockTable acBlkTbl)
+        private static DBObjectCollection ObtenerPuntosyLineas(Entity ent, BlockTable acBlkTbl, BlockTableRecord acBlkTblRec, Transaction t)
         {
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
 
@@ -213,31 +211,36 @@ namespace fi.upm.es.dwgDecoder
             DBObjectCollection procesar = new DBObjectCollection();
 
             ent.Explode(procesar);
-
-            using (Transaction t = Application.DocumentManager.MdiActiveDocument.Database.TransactionManager.StartTransaction())
+            
+            while (procesar.Count != 0)
             {
-                BlockTableRecord acBlkTblRec2 = (BlockTableRecord)t.GetObject(acBlkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite);
-                while (procesar.Count != 0)
+                Entity obj = (Entity) procesar[0];
+                acBlkTblRec.AppendEntity(obj);
+                t.AddNewlyCreatedDBObject(obj, true);
+                                    
+                if (obj.ObjectId.ObjectClass.DxfName == "POINT" || obj.ObjectId.ObjectClass.DxfName == "LINE")
                 {
-                    Entity obj = (Entity) procesar[0];
-                    acBlkTblRec2.AppendEntity(obj);
-                    t.AddNewlyCreatedDBObject(obj, true);
-                    if (obj.ObjectId.ObjectClass.DxfName == "POINT" || obj.ObjectId.ObjectClass.DxfName == "LINE")
+                    if (retorno.Contains(obj) == false)
                     {
                         retorno.Add(obj);
-                    }
-                    else
-                    {
-                        DBObjectCollection aux = new DBObjectCollection();
-                        obj.Explode(aux);
-                        foreach (DBObject aux2 in aux)
-                        {
-                            procesar.Add(aux2);
-                        }
-                    }
-                    procesar.Remove(obj);
+                    }                        
                 }
+                if (obj.ObjectId.ObjectClass.DxfName == "ARC")
+                {
+                   // Completar con el proceso para los arcos.                   
+                }
+                if (obj.ObjectId.ObjectClass.DxfName == "LWPOLYLINE")
+                {
+                   DBObjectCollection aux = new DBObjectCollection();
+                   obj.Explode(aux);
+                   foreach (DBObject aux2 in aux)
+                   {
+                       procesar.Add(aux2);
+                   }
+                }
+                procesar.Remove(obj);
             }
+        
             return retorno;
         }
     }

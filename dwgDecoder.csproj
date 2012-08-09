@@ -79,6 +79,7 @@
     <Compile Include="dwgElementos\dwgPunto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="tools\exportXml.cs" />
+    <Compile Include="tools\herramientasCurvas.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
