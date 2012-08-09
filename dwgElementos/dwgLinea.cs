@@ -5,7 +5,9 @@ using System.Text;
 
 namespace fi.upm.es.dwgDecoder.dwgElementos
 {
-    class dwgLinea : dwgEntidadBase
+    public class dwgLinea : dwgEntidadBase
     {
+        public dwgPunto p_origen;
+        public dwgPunto p_final;
     }
 }

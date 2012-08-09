@@ -66,20 +66,47 @@ namespace fi.upm.es.dwgDecoder.tools
 
                 xmlelement2.AppendChild(capa);
 
-                var polycapa = dwgf.dwgPolylineas.Values.Where(x => x.capaId.ToString() == cap.objectId.ToString());
-              
-            
-                foreach (dwgPolylinea obj in polycapa)
+                var puntocapa = dwgf.dwgPuntos.Values.Where(x => x.capaId.ToString() == cap.objectId.ToString());
+                          
+                foreach (dwgPunto obj in puntocapa)
+                {
+                    XmlElement punto = xmldoc.CreateElement("punto");
+                    xmlattribute = xmldoc.CreateAttribute("id");
+                    xmlattribute.Value = obj.objId.ToString();
+                    punto.Attributes.Append(xmlattribute);
+                
+                    xmlattribute = xmldoc.CreateAttribute("coord_x");
+                    xmlattribute.Value = obj.coordenadas.X.ToString();
+                    punto.Attributes.Append(xmlattribute);
+
+                    xmlattribute = xmldoc.CreateAttribute("coord_y");
+                    xmlattribute.Value = obj.coordenadas.Y.ToString();
+                    punto.Attributes.Append(xmlattribute);
+
+                    capa.AppendChild(punto);
+                }
+
+                var puntolinea = dwgf.dwgLineas.Values.Where(x => x.capaId.ToString() == cap.objectId.ToString());
+
+                foreach (dwgLinea obj in puntolinea)
                 {
                     XmlElement linea = xmldoc.CreateElement("linea");
                     xmlattribute = xmldoc.CreateAttribute("id");
                     xmlattribute.Value = obj.objId.ToString();
                     linea.Attributes.Append(xmlattribute);
-                
-                    xmlattribute = xmldoc.CreateAttribute("capaId");
-                    xmlattribute.Value = obj.capaId.ToString();
+
+                    xmlattribute = xmldoc.CreateAttribute("p1_id");
+                    xmlattribute.Value = obj.p_origen.objId.ToString();
                     linea.Attributes.Append(xmlattribute);
-                
+
+                    xmlattribute = xmldoc.CreateAttribute("p2_id");
+                    xmlattribute.Value = obj.p_final.objId.ToString();
+                    linea.Attributes.Append(xmlattribute);
+
+                    xmlattribute = xmldoc.CreateAttribute("ancho");
+                    xmlattribute.Value = "";
+                    linea.Attributes.Append(xmlattribute);
+
                     capa.AppendChild(linea);
                 }
             }
