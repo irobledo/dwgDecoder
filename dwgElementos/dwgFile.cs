@@ -7,6 +7,7 @@ using Autodesk.AutoCAD.DatabaseServices;
 
 namespace fi.upm.es.dwgDecoder.dwgElementos
 {
+    [Serializable]
     public class dwgFile
     {
         public Dictionary<ObjectId,dwgCapa> dwgCapas = new Dictionary<ObjectId,dwgCapa>();

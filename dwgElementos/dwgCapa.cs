@@ -27,5 +27,14 @@ namespace fi.upm.es.dwgDecoder.dwgElementos
         public bool oculta;
 
         public LineWeight default_gruesoLinea;
+
+        public override String ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("CAPA " + this.objectId);
+            sb.AppendLine("\tnombreCapa: " + this.nombreCapa);
+            
+            return sb.ToString();
+        }
     }
 }

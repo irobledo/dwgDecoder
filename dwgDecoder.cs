@@ -104,7 +104,8 @@ namespace fi.upm.es.dwgDecoder
                 }
             }
 
-            exportXml.export2Xml(dwgf);
+            // exportXml.export2Xml(dwgf);
+            exportXml.serializar(dwgf);
         }
 
 

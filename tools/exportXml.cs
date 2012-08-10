@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using System.Xml.Serialization;
+using System.IO;
 
 using Autodesk.AutoCAD.DatabaseServices;
 
@@ -12,6 +14,43 @@ namespace fi.upm.es.dwgDecoder.tools
 {
     public static class exportXml
     {
+        public static void serializar(dwgFile dwgf)
+        {
+            using (StreamWriter writer = new StreamWriter("C:\\serializado.txt"))
+            {
+                writer.WriteLine(" #### CAPAS #########");
+
+                foreach (dwgCapa obj in dwgf.dwgCapas.Values)
+                {
+                    writer.WriteLine(obj.ToString());
+                }
+
+                writer.WriteLine(" #### PUNTOS #########");
+
+                foreach (dwgPunto obj in dwgf.dwgPuntos.Values)
+                {
+                    writer.WriteLine(obj.ToString());
+                }
+
+
+                writer.WriteLine(" #### ARCOS #########");
+
+                foreach (dwgArco obj in dwgf.dwgArcos.Values)
+                {
+                    writer.WriteLine(obj.ToString());
+                }
+
+                writer.WriteLine(" #### POLYLINEAS #########");
+
+                foreach (dwgPolylinea obj in dwgf.dwgPolylineas.Values)
+                {
+                    writer.WriteLine(obj.ToString());
+                }
+
+                return;
+            }
+        }
+
         public static void export2Xml(dwgFile dwgf)
         {
             XmlDocument xmldoc = new XmlDocument();
@@ -94,7 +133,7 @@ namespace fi.upm.es.dwgDecoder.tools
 
                 foreach (dwgArco obj in puntoarco)
                 {
-                    XmlElement arco = exportXml.arco2xml(obj, xmldoc, cap.objectId, dwgf);
+                    XmlElement arco = exportXml.arco2xml(obj, xmldoc, cap.objectId, dwgf);                    
                     capa.AppendChild(arco);
                 }
             }
@@ -168,6 +207,13 @@ namespace fi.upm.es.dwgDecoder.tools
                 polylinea.AppendChild(linea);
             }
 
+            var puntolinea3 = dwgf.dwgArcos.Values.Where(x => x.capaId.ToString() == capaId.ToString() && x.parentId.ToString() == p.objId.ToString());
+
+            foreach (dwgArco obj2 in puntolinea3)
+            {
+                XmlElement arco = exportXml.arco2xml(obj2, xmldoc, capaId, dwgf);
+                polylinea.AppendChild(arco);
+            }
             return polylinea;
         }
 
