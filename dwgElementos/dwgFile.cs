@@ -17,5 +17,7 @@ namespace fi.upm.es.dwgDecoder.dwgElementos
 
         public Dictionary<ObjectId,dwgPolylinea> dwgPolylineas = new Dictionary<ObjectId,dwgPolylinea>();
 
+        public Dictionary<ObjectId, dwgArco> dwgArcos = new Dictionary<ObjectId, dwgArco>();
+
     }
 }

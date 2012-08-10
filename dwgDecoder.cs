@@ -92,24 +92,11 @@ namespace fi.upm.es.dwgDecoder
                         case "POINT":
                         case "LINE":
                         case "LWPOLYLINE":
+                        case "ARC":
                             ObjectId parentId = new ObjectId();
                             dwgDecoder.ProcesarObjetos(acObjId, acBlkTbl, acBlkTblRec, t, dwgf, parentId);
-                            ed.WriteMessage("\nProcesado punto/linea/polylinea: " + acObjId.ToString());
+                            ed.WriteMessage("\nProcesado punto/linea/polylinea:/arco " + acObjId.ToString());
                             break;                        
-                        /*
-                        case "ARC":
-                            DBObjectCollection entitySet2 = new DBObjectCollection();
-                            entitySet2 = herramientasCurvas.curvaAlineas((Curve) ent, 5, acBlkTbl, acBlkTblRec, t);
-                            ed.WriteMessage("\nProcesado arco: " +  acObjId.ToString());
-                            ed.WriteMessage("\nNúmero de entidades a procesar: " + entitySet2.Count.ToString());
-                            
-                            foreach (Entity ent2 in entitySet2)
-                            {
-                                ed.WriteMessage("\nNueva entidad - " + ent2.ObjectId + ":" + ent2.ObjectId.ObjectClass.DxfName);
-                            }
-                            
-                            break;                        
-                        */
                         default:
                             ed.WriteMessage("\nTipo de objeto no reconocido por dwgDecoder.");
                             break;
@@ -179,8 +166,6 @@ namespace fi.upm.es.dwgDecoder
                     }
                     ed.WriteMessage("\nProcesada linea: " + linea.objId.ToString());
                     break;
-                case "ARC":
-                    break;
                 case "LWPOLYLINE":
                     dwgPolylinea poli = new dwgPolylinea();
                     poli.objId = acObjId;
@@ -215,6 +200,30 @@ namespace fi.upm.es.dwgDecoder
                         dwgf.dwgPolylineas.Add(poli.objId, poli);
                     }
                     ed.WriteMessage("\nProcesada polilinea: " + poli.objId.ToString());
+                    break;
+                case "ARC":
+                    dwgArco arco = new dwgArco();
+                    arco.objId = acObjId;
+                    arco.capaId = ent.LayerId;
+                    arco.parentId = parentId;
+                    // Descomponemos en subcomponentes.
+                    DBObjectCollection entitySet2 = new DBObjectCollection();
+                    entitySet2 = herramientasCurvas.curvaAlineas((Curve)ent, 5, acBlkTbl, acBlkTblRec, t);
+
+                    // Procesamos cada uno de los subcomponentes.
+                    // Solo pueden ser: lineas. Eso lo garantiza la funcion curvaAlineas
+                    foreach (Entity ent2 in entitySet2)
+                    {
+                        arco.lineas.Add(ent2.ObjectId);
+                        dwgDecoder.ProcesarObjetos(ent2.ObjectId, acBlkTbl, acBlkTblRec, t, dwgf, arco.objId);
+                        ed.WriteMessage("\nNueva entidad - " + ent2.ObjectId.ObjectClass.DxfName + ":" + ent2.ObjectId);
+                    }
+
+                    if (dwgf.dwgArcos.ContainsKey(arco.objId) == false)
+                    {
+                        dwgf.dwgArcos.Add(arco.objId, arco);
+                    }
+                    ed.WriteMessage("\nProcesado arco: " + arco.objId.ToString());
                     break;
                 default:
                     ed.WriteMessage(acObjId.ObjectClass.ClassVersion.ToString());
