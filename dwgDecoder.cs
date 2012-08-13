@@ -68,7 +68,10 @@ namespace fi.upm.es.dwgDecoder
                     
                     capa.default_gruesoLinea = acLyrTblRec.LineWeight;
 
+                    //if (capa.nombreCapa == "1116-SENAL-RODADURA")
+                    //{
                     dwgf.dwgCapas.Add(capa.objectId, capa);
+                    //}
 
                     ed.WriteMessage("\nProcesada capa:" + acLyrTblRec.Name);                     
                     
@@ -82,11 +85,22 @@ namespace fi.upm.es.dwgDecoder
  
                 // Open the Block table record Model space for read
                 BlockTableRecord acBlkTblRec = (BlockTableRecord) t.GetObject(acBlkTbl[BlockTableRecord.ModelSpace],OpenMode.ForWrite);
- 
+                
                 // Step through the Block table record
                 foreach (ObjectId acObjId in acBlkTblRec)
                 {
                     Entity ent = (Entity)t.GetObject(acObjId, OpenMode.ForRead);
+
+                    if (dwgf.dwgCapas.ContainsKey(ent.LayerId) == false) 
+                    {
+                        continue;
+                    }
+
+                    if (dwgf.objetosArtificiales.Contains(ent.ObjectId) == true)
+                    {
+                        continue;
+                    }
+
                     switch (acObjId.ObjectClass.DxfName)
                     {
                         case "POINT":
@@ -104,8 +118,8 @@ namespace fi.upm.es.dwgDecoder
                 }
             }
 
-            // exportXml.export2Xml(dwgf);
             exportXml.serializar(dwgf);
+            exportXml.export2Xml(dwgf);
         }
 
 
@@ -175,7 +189,7 @@ namespace fi.upm.es.dwgDecoder
                     
                     // Descomponemos en subcomponentes.
                     DBObjectCollection entitySet = new DBObjectCollection();
-                    entitySet = dwgDecoder.ObtenerPuntosyLineas(ent, acBlkTbl, acBlkTblRec, t);
+                    entitySet = dwgDecoder.ObtenerPuntosyLineas(ent, acBlkTbl, acBlkTblRec, t, dwgf);
                     
                     // Procesamos cada uno de los subcomponentes.
                     // Solo pueden ser: lineas y arcos. Una polylinea no puede formarse con nada mas.
@@ -190,13 +204,14 @@ namespace fi.upm.es.dwgDecoder
                                 poli.arcos.Add(ent2.ObjectId);
                                 break;
                             default:
+                                ed.WriteMessage("\nAl descomponer polylinea, objeto no reconocido:" + ent2.ObjectId.ObjectClass.DxfName);
                                 break;
                         }
                         dwgDecoder.ProcesarObjetos(ent2.ObjectId, acBlkTbl, acBlkTblRec, t, dwgf,poli.objId);
                         ed.WriteMessage("\nNueva entidad - " + ent2.ObjectId.ObjectClass.DxfName + ":" + ent2.ObjectId);
                     }
 
-                    if (dwgf.dwgPolylineas.ContainsKey(poli.objId) == false)
+                    if ((entitySet.Count > 0) && (dwgf.dwgPolylineas.ContainsKey(poli.objId) == false))
                     {
                         dwgf.dwgPolylineas.Add(poli.objId, poli);
                     }
@@ -209,7 +224,7 @@ namespace fi.upm.es.dwgDecoder
                     arco.parentId = parentId;
                     // Descomponemos en subcomponentes.
                     DBObjectCollection entitySet2 = new DBObjectCollection();
-                    entitySet2 = herramientasCurvas.curvaAlineas((Curve)ent, 5, acBlkTbl, acBlkTblRec, t);
+                    entitySet2 = herramientasCurvas.curvaAlineas((Curve)ent, 5, acBlkTbl, acBlkTblRec, t,arco.capaId, dwgf);
 
                     // Procesamos cada uno de los subcomponentes.
                     // Solo pueden ser: lineas. Eso lo garantiza la funcion curvaAlineas
@@ -225,7 +240,7 @@ namespace fi.upm.es.dwgDecoder
                         dwgf.dwgArcos.Add(arco.objId, arco);
                     }
                     ed.WriteMessage("\nProcesado arco: " + arco.objId.ToString());
-                    break;
+                    break;                
                 default:
                     ed.WriteMessage(acObjId.ObjectClass.ClassVersion.ToString());
                     break;
@@ -233,7 +248,7 @@ namespace fi.upm.es.dwgDecoder
             return;
         }
 
-        private static DBObjectCollection ObtenerPuntosyLineas(Entity ent, BlockTable acBlkTbl, BlockTableRecord acBlkTblRec, Transaction t)
+        private static DBObjectCollection ObtenerPuntosyLineas(Entity ent, BlockTable acBlkTbl, BlockTableRecord acBlkTblRec, Transaction t, dwgFile dwgf)
         {
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
 
@@ -247,6 +262,7 @@ namespace fi.upm.es.dwgDecoder
                 Entity obj = (Entity) procesar[0];
                 acBlkTblRec.AppendEntity(obj);
                 t.AddNewlyCreatedDBObject(obj, true);
+                dwgf.objetosArtificiales.Add(obj.ObjectId);
                                     
                 if (obj.ObjectId.ObjectClass.DxfName == "POINT" || obj.ObjectId.ObjectClass.DxfName == "LINE")
                 {
@@ -258,6 +274,10 @@ namespace fi.upm.es.dwgDecoder
                 if (obj.ObjectId.ObjectClass.DxfName == "ARC")
                 {
                    // Completar con el proceso para los arcos.                   
+                    if (retorno.Contains(obj) == false)
+                    {
+                        retorno.Add(obj);
+                    }
                 }
                 if (obj.ObjectId.ObjectClass.DxfName == "LWPOLYLINE")
                 {

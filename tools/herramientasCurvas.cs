@@ -6,11 +6,13 @@ using System.Text;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 
+using fi.upm.es.dwgDecoder.dwgElementos;
+
 namespace fi.upm.es.dwgDecoder.tools
 {
     public static class herramientasCurvas
     {
-        public static DBObjectCollection curvaAlineas(Curve cur, int numSeg, BlockTable acBlkTbl, BlockTableRecord acBlkTblRec,Transaction t)
+        public static DBObjectCollection curvaAlineas(Curve cur, int numSeg, BlockTable acBlkTbl, BlockTableRecord acBlkTblRec,Transaction t, ObjectId LayerId, dwgFile dwfg)
         {
             DBObjectCollection ret = new DBObjectCollection();
 
@@ -43,8 +45,10 @@ namespace fi.upm.es.dwgDecoder.tools
                         Line ln = new Line();
                         ln.StartPoint = pts[i];
                         ln.EndPoint = pts[i + 1];
+                        ln.LayerId = LayerId;
                         acBlkTblRec.AppendEntity(ln);
                         t.AddNewlyCreatedDBObject(ln, true);
+                        dwfg.objetosArtificiales.Add(ln.ObjectId);
                         ret.Add(ln);
                     }
                 }

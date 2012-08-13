@@ -20,5 +20,7 @@ namespace fi.upm.es.dwgDecoder.dwgElementos
 
         public Dictionary<ObjectId, dwgArco> dwgArcos = new Dictionary<ObjectId, dwgArco>();
 
+        public List<ObjectId> objetosArtificiales = new List<ObjectId>();
+
     }
 }
