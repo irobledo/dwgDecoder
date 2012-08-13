@@ -5,6 +5,7 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.ApplicationServices;
 
 using System;
+using System.IO;
 using System.Xml.Serialization;
 
 using fi.upm.es.dwgDecoder.dwgElementos;
@@ -35,7 +36,7 @@ namespace fi.upm.es.dwgDecoder
     {
         static Database db = Application.DocumentManager.MdiActiveDocument.Database;
         static Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
-        static bool logActivo = true;
+        static bool logActivo = false;
         static bool logDebug = false;
 
         static bool configuracionUsuario = false;
@@ -43,6 +44,8 @@ namespace fi.upm.es.dwgDecoder
         static Double dlwdefault = 25;
 
         static dwgFile dwgf = new dwgFile();
+
+        static String ruta;
 
         [CommandMethod("serializarDWG")]
         public static void serializarDWG()
@@ -161,7 +164,7 @@ namespace fi.upm.es.dwgDecoder
 
             // exportXml.serializar(dwgf);
             log("Exportamos al formato XML el contenido de la base de datos de Autocad.", false);
-            exportXml.export2Xml(dwgf);
+            exportXml.export2Xml(dwgf,ruta);
         }
 
 
@@ -393,16 +396,76 @@ namespace fi.upm.es.dwgDecoder
                     if ((userLog == "S") || (userLog == "s"))
                     {
                         logActivo = true;
-                        return true;
+                        break;
                     }
                     else if ((userLog == "N") || (userLog == "n"))
                     {
                         logActivo = false;
-                        return true;
+                        break;
                     }
                     else
                     {
                         userLog = "";
+                    }
+                }
+            }
+
+            if (logActivo == true)
+            {
+                String userDebug = "";
+                while (userDebug == "")
+                {
+                    PromptStringOptions pStrOpts = new PromptStringOptions("\nIntroduzca si desea un log con información de debug del proceso de decodificación (s/n): ");
+                    PromptResult pStrRes = ed.GetString(pStrOpts);
+                    if (pStrRes.Status == PromptStatus.Cancel)
+                    {
+                        return false;
+                    }
+                    else if (pStrRes.Status == PromptStatus.OK)
+                    {
+                        userDebug = pStrRes.StringResult;
+                        if ((userDebug == "S") || (userDebug == "s"))
+                        {
+                            logDebug = true;
+                            break;
+                        }
+                        else if ((userDebug == "N") || (userDebug == "n"))
+                        {
+                            logDebug = false;
+                            break;
+                        }
+                        else
+                        {
+                            userDebug = "";
+                        }
+                    }
+                }
+            }
+
+            // System.IO.Path.IsPathRooted(@"c:\foo"); 
+            String filePath = "";
+            while (filePath == "")
+            {
+                PromptStringOptions pStrOpts = new PromptStringOptions("\nIntroduzca el nombre del fichero (ruta completa) donde quiere guardar la salida del proceso: ");
+                PromptResult pStrRes = ed.GetString(pStrOpts);
+                if (pStrRes.Status == PromptStatus.Cancel)
+                {
+                    return false;
+                }
+                else if (pStrRes.Status == PromptStatus.OK)
+                {
+                    filePath = pStrRes.StringResult;
+                    try
+                    {
+                        filePath = Path.GetFullPath(filePath);
+                        ed.WriteMessage("El fichero con toda la información sera creado en la ruta: " + filePath);
+                        ruta = filePath;
+                    }
+                    catch (System.Exception e)
+                    {
+                        ed.WriteMessage("Error. No es una ruta válida");
+                        ed.WriteMessage(e.ToString());
+                        filePath = "";
                     }
                 }
             }

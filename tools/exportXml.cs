@@ -14,9 +14,9 @@ namespace fi.upm.es.dwgDecoder.tools
 {
     public static class exportXml
     {
-        public static void serializar(dwgFile dwgf)
+        public static void serializar(dwgFile dwgf, String ruta)
         {
-            using (StreamWriter writer = new StreamWriter("C:\\serializado.txt"))
+            using (StreamWriter writer = new StreamWriter(ruta))
             {
                 writer.WriteLine(" #### CAPAS #########");
 
@@ -51,7 +51,7 @@ namespace fi.upm.es.dwgDecoder.tools
             }
         }
 
-        public static void export2Xml(dwgFile dwgf)
+        public static void export2Xml(dwgFile dwgf, String ruta)
         {
             XmlDocument xmldoc = new XmlDocument();
 
@@ -131,7 +131,7 @@ namespace fi.upm.es.dwgDecoder.tools
             }
             try
             {
-                xmldoc.Save("c:\\prueba.xml");
+                xmldoc.Save(ruta);
             }
             catch (Exception)
             {
