@@ -33,18 +33,40 @@ namespace fi.upm.es.dwgDecoder
     // - NOMBRE DE LA CAPA     
     public class dwgDecoder
     {
+        static Database db = Application.DocumentManager.MdiActiveDocument.Database;
+        static Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+
+        static Double dlwdefault = 25;
+
+        static dwgFile dwgf = new dwgFile();
+
         [CommandMethod("serializarDWG")]
         public static void serializarDWG()
         {
-            Database db = Application.DocumentManager.MdiActiveDocument.Database;
-            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+            // Reseteamos el dwgFile
+            dwgf.resetDwgFile();
 
-            dwgFile dwgf = new dwgFile();
-
-            using (Transaction t = Application.DocumentManager.MdiActiveDocument.Database.TransactionManager.StartTransaction())
+            // Tratamos de cargar el valor por defecto.    
+            try
             {
+                String lwdefault = Application.GetSystemVariable("LWDEFAULT").ToString();
+                Double.TryParse(lwdefault, out dlwdefault);
+            }
+            catch (System.Exception e)
+            {
+                dlwdefault = 25;
+            }
+
+            using (Transaction t = db.TransactionManager.StartTransaction())
+            {
+                // Leemos los estilos de linea
+                // LinetypeTable lt = (LinetypeTable) t.GetObject(db.LinetypeTableId,OpenMode.ForRead);
+                // LinetypeTableRecord ltr = (LinetypeTableRecord) t.GetObject(lt.values.
+
+
                 // Leemos las capas
                 LayerTable acLyrTbl = (LayerTable)t.GetObject(db.LayerTableId, OpenMode.ForRead);
+
                 foreach (ObjectId acObjId in acLyrTbl)
                 {
                     LayerTableRecord acLyrTblRec = (LayerTableRecord)t.GetObject(acObjId, OpenMode.ForRead);
@@ -66,8 +88,8 @@ namespace fi.upm.es.dwgDecoder
                     capa.apagada = acLyrTblRec.IsOff;
                     capa.enUso = acLyrTblRec.IsUsed;
                     
-                    capa.default_gruesoLinea = acLyrTblRec.LineWeight;
-
+                    capa.default_gruesoLinea = (Double) acLyrTblRec.LineWeight;
+                    
                     //if (capa.nombreCapa == "1116-SENAL-RODADURA")
                     //{
                     dwgf.dwgCapas.Add(capa.objectId, capa);
@@ -108,7 +130,7 @@ namespace fi.upm.es.dwgDecoder
                         case "LWPOLYLINE":
                         case "ARC":
                             ObjectId parentId = new ObjectId();
-                            dwgDecoder.ProcesarObjetos(acObjId, acBlkTbl, acBlkTblRec, t, dwgf, parentId);
+                            dwgDecoder.ProcesarObjetos(acObjId, acBlkTbl, acBlkTblRec, t, parentId);
                             ed.WriteMessage("\nProcesado punto/linea/polylinea:/arco " + acObjId.ToString());
                             break;                        
                         default:
@@ -123,9 +145,8 @@ namespace fi.upm.es.dwgDecoder
         }
 
 
-        private static void ProcesarObjetos(ObjectId acObjId, BlockTable acBlkTbl, BlockTableRecord acBlkTblRec, Transaction t, dwgFile dwgf, ObjectId parentId)
+        private static void ProcesarObjetos(ObjectId acObjId, BlockTable acBlkTbl, BlockTableRecord acBlkTblRec, Transaction t, ObjectId parentId)
         {
-            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
             Entity ent = (Entity)t.GetObject(acObjId, OpenMode.ForRead);
             switch (acObjId.ObjectClass.DxfName)
             {
@@ -136,6 +157,7 @@ namespace fi.upm.es.dwgDecoder
                     punto.capaId = ent.LayerId;
                     punto.parentId = parentId;
                     punto.coordenadas = porigen.Position;
+                    
                     if (dwgf.dwgPuntos.ContainsKey(punto.objId) == false)
                     {
                         dwgf.dwgPuntos.Add(punto.objId, punto);
@@ -148,6 +170,27 @@ namespace fi.upm.es.dwgDecoder
                     linea.objId = acObjId;
                     linea.capaId = ent.LayerId;
                     linea.parentId = parentId;
+
+                    linea.LineWeight = (Double)lorigen.LineWeight;
+
+                    if (linea.LineWeight == -1)
+                    {
+                        // Reemplazar por el ancho de la capa.
+                        linea.LineWeight = dlwdefault;
+                        dwgCapa c;
+                        dwgf.dwgCapas.TryGetValue(linea.capaId,out c);
+                        if (c != null)
+                        {
+                            linea.LineWeight = c.default_gruesoLinea;
+                        }
+                    }
+                    else if ((linea.LineWeight == -2) || (linea.LineWeight == -3))
+                    {
+                        // -2: Reemplazar por el ancho del bloque. Esto habra que implementarlo cuando se de soporte a bloques.
+                        // -3: ancho por defecto del autocad. Comando LWDEFAULT
+                        linea.LineWeight = dlwdefault;
+                    }
+                    
                     DBPoint p_origen_0 = new DBPoint(lorigen.StartPoint);
                     DBPoint p_final_0 = new DBPoint(lorigen.EndPoint);
                     acBlkTblRec.AppendEntity(p_origen_0);
@@ -189,7 +232,7 @@ namespace fi.upm.es.dwgDecoder
                     
                     // Descomponemos en subcomponentes.
                     DBObjectCollection entitySet = new DBObjectCollection();
-                    entitySet = dwgDecoder.ObtenerPuntosyLineas(ent, acBlkTbl, acBlkTblRec, t, dwgf);
+                    entitySet = dwgDecoder.ObtenerPuntosyLineas(ent, acBlkTbl, acBlkTblRec, t);
                     
                     // Procesamos cada uno de los subcomponentes.
                     // Solo pueden ser: lineas y arcos. Una polylinea no puede formarse con nada mas.
@@ -207,7 +250,7 @@ namespace fi.upm.es.dwgDecoder
                                 ed.WriteMessage("\nAl descomponer polylinea, objeto no reconocido:" + ent2.ObjectId.ObjectClass.DxfName);
                                 break;
                         }
-                        dwgDecoder.ProcesarObjetos(ent2.ObjectId, acBlkTbl, acBlkTblRec, t, dwgf,poli.objId);
+                        dwgDecoder.ProcesarObjetos(ent2.ObjectId, acBlkTbl, acBlkTblRec, t, poli.objId);
                         ed.WriteMessage("\nNueva entidad - " + ent2.ObjectId.ObjectClass.DxfName + ":" + ent2.ObjectId);
                     }
 
@@ -231,7 +274,7 @@ namespace fi.upm.es.dwgDecoder
                     foreach (Entity ent2 in entitySet2)
                     {
                         arco.lineas.Add(ent2.ObjectId);
-                        dwgDecoder.ProcesarObjetos(ent2.ObjectId, acBlkTbl, acBlkTblRec, t, dwgf, arco.objId);
+                        dwgDecoder.ProcesarObjetos(ent2.ObjectId, acBlkTbl, acBlkTblRec, t, arco.objId);
                         ed.WriteMessage("\nNueva entidad - " + ent2.ObjectId.ObjectClass.DxfName + ":" + ent2.ObjectId);
                     }
 
@@ -248,10 +291,8 @@ namespace fi.upm.es.dwgDecoder
             return;
         }
 
-        private static DBObjectCollection ObtenerPuntosyLineas(Entity ent, BlockTable acBlkTbl, BlockTableRecord acBlkTblRec, Transaction t, dwgFile dwgf)
+        private static DBObjectCollection ObtenerPuntosyLineas(Entity ent, BlockTable acBlkTbl, BlockTableRecord acBlkTblRec, Transaction t)
         {
-            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
-
             DBObjectCollection retorno = new DBObjectCollection();
             DBObjectCollection procesar = new DBObjectCollection();
 

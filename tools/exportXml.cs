@@ -94,17 +94,9 @@ namespace fi.upm.es.dwgDecoder.tools
 	  
             foreach (dwgCapa cap in dwgf.dwgCapas.Values)
 	        {
-                XmlElement capa = xmldoc.CreateElement("capa");
-                xmlattribute = xmldoc.CreateAttribute("id");
-                xmlattribute.Value = cap.objectId.ToString();
-                capa.Attributes.Append(xmlattribute);
-
-                xmlattribute = xmldoc.CreateAttribute("name");
-                xmlattribute.Value = cap.nombreCapa;
-                capa.Attributes.Append(xmlattribute);
-
+                XmlElement capa = exportXml.capa2xml(cap, xmldoc);
                 xmlelement2.AppendChild(capa);
-
+                
                 var puntocapa = dwgf.dwgPuntos.Values.Where(x => x.capaId.ToString() == cap.objectId.ToString());
                           
                 foreach (dwgPunto obj in puntocapa)
@@ -148,6 +140,80 @@ namespace fi.upm.es.dwgDecoder.tools
             return;
         }
 
+        public static XmlElement capa2xml(dwgCapa c, XmlDocument xmldoc)
+        {
+            XmlElement capa = xmldoc.CreateElement("capa");
+            XmlAttribute xmlattribute = xmldoc.CreateAttribute("id");
+            xmlattribute.Value = c.objectId.ToString();
+            capa.Attributes.Append(xmlattribute);
+
+            xmlattribute = xmldoc.CreateAttribute("name");
+            xmlattribute.Value = c.nombreCapa;
+            capa.Attributes.Append(xmlattribute);
+
+            XmlElement mapa = xmldoc.CreateElement("mapa_atributos");
+            capa.AppendChild(mapa);
+
+            
+            XmlElement mapa_elto = xmldoc.CreateElement("atributo");
+            mapa.AppendChild(mapa_elto);
+            xmlattribute = xmldoc.CreateAttribute("key");
+            xmlattribute.Value = "handleId";
+            mapa_elto.Attributes.Append(xmlattribute);
+            xmlattribute = xmldoc.CreateAttribute("valor");
+            xmlattribute.Value = c.handleId.ToString();
+            mapa_elto.Attributes.Append(xmlattribute);
+
+            mapa_elto = xmldoc.CreateElement("atributo");
+            mapa.AppendChild(mapa_elto);
+            xmlattribute = xmldoc.CreateAttribute("key");
+            xmlattribute.Value = "apagada";
+            mapa_elto.Attributes.Append(xmlattribute);
+            xmlattribute = xmldoc.CreateAttribute("valor");
+            xmlattribute.Value = c.apagada.ToString();
+            mapa_elto.Attributes.Append(xmlattribute);
+
+            mapa_elto = xmldoc.CreateElement("atributo");
+            mapa.AppendChild(mapa_elto);
+            xmlattribute = xmldoc.CreateAttribute("key");
+            xmlattribute.Value = "bloqueada";
+            mapa_elto.Attributes.Append(xmlattribute);
+            xmlattribute = xmldoc.CreateAttribute("valor");
+            xmlattribute.Value = c.bloqueada.ToString();
+            mapa_elto.Attributes.Append(xmlattribute);
+
+            mapa_elto = xmldoc.CreateElement("atributo");
+            mapa.AppendChild(mapa_elto);
+            xmlattribute = xmldoc.CreateAttribute("key");
+            xmlattribute.Value = "enUso";
+            mapa_elto.Attributes.Append(xmlattribute);
+            xmlattribute = xmldoc.CreateAttribute("valor");
+            xmlattribute.Value = c.enUso.ToString();
+            mapa_elto.Attributes.Append(xmlattribute);
+
+            mapa_elto = xmldoc.CreateElement("atributo");
+            mapa.AppendChild(mapa_elto);
+            xmlattribute = xmldoc.CreateAttribute("key");
+            xmlattribute.Value = "oculta";
+            mapa_elto.Attributes.Append(xmlattribute);
+            xmlattribute = xmldoc.CreateAttribute("valor");
+            xmlattribute.Value = c.oculta.ToString();
+            mapa_elto.Attributes.Append(xmlattribute);
+
+            /*
+            mapa_elto = xmldoc.CreateElement("atributo");
+            mapa.AppendChild(mapa_elto);
+            xmlattribute = xmldoc.CreateAttribute("key");
+            xmlattribute.Value = "grueso_por_defecto_lineas";
+            mapa_elto.Attributes.Append(xmlattribute);
+            xmlattribute = xmldoc.CreateAttribute("valor");
+            xmlattribute.Value = c.default_gruesoLinea.ToString();
+            mapa_elto.Attributes.Append(xmlattribute);
+            */
+
+            return capa;
+        }
+
         public static XmlElement punto2xml(dwgPunto p, XmlDocument xmldoc)
         {
             XmlElement punto = xmldoc.CreateElement("punto");
@@ -182,12 +248,14 @@ namespace fi.upm.es.dwgDecoder.tools
             linea.Attributes.Append(xmlattribute);
 
             xmlattribute = xmldoc.CreateAttribute("ancho");
-            xmlattribute.Value = "";
+            xmlattribute.Value = l.LineWeight.ToString();
             linea.Attributes.Append(xmlattribute);
 
+            /*
             xmlattribute = xmldoc.CreateAttribute("parent_id");
             xmlattribute.Value = l.parentId.ToString();
             linea.Attributes.Append(xmlattribute);
+            */
 
             return linea;
         }
@@ -234,6 +302,26 @@ namespace fi.upm.es.dwgDecoder.tools
 
             return arco;
         }
+
+        public static XmlElement rgb2xml(int R, int G, int B, XmlDocument xmldoc)
+        {
+            XmlElement rgb = xmldoc.CreateElement("color");
+            
+            XmlAttribute xmlattribute = xmldoc.CreateAttribute("R");
+            xmlattribute.Value = R.ToString();
+            rgb.Attributes.Append(xmlattribute);
+
+            xmlattribute = xmldoc.CreateAttribute("G");
+            xmlattribute.Value = G.ToString();
+            rgb.Attributes.Append(xmlattribute);
+
+            xmlattribute = xmldoc.CreateAttribute("B");
+            xmlattribute.Value = B.ToString();
+            rgb.Attributes.Append(xmlattribute);
+
+            return rgb;
+        }
+
 
     }
 }

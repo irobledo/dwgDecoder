@@ -22,5 +22,16 @@ namespace fi.upm.es.dwgDecoder.dwgElementos
 
         public List<ObjectId> objetosArtificiales = new List<ObjectId>();
 
+        public void resetDwgFile()
+        {
+            this.dwgCapas.Clear();
+            this.dwgPuntos.Clear();
+            this.dwgLineas.Clear();
+            this.dwgPolylineas.Clear();
+            this.dwgArcos.Clear();
+            this.objetosArtificiales.Clear();
+
+            return;
+        }
     }
 }

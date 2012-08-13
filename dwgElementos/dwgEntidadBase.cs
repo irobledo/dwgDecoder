@@ -12,5 +12,7 @@ namespace fi.upm.es.dwgDecoder.dwgElementos
         public ObjectId objId;
         public ObjectId capaId;
         public ObjectId parentId;
+
+        public Double LineWeight;
     }
 }

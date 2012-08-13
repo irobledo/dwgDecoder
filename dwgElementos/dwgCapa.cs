@@ -26,7 +26,7 @@ namespace fi.upm.es.dwgDecoder.dwgElementos
         public bool apagada;
         public bool oculta;
 
-        public LineWeight default_gruesoLinea;
+        public Double default_gruesoLinea;
 
         public override String ToString()
         {
