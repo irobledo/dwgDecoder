@@ -36,16 +36,16 @@ namespace fi.upm.es.dwgDecoder
     {
         static Database db = Application.DocumentManager.MdiActiveDocument.Database;
         static Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+        
         static bool logActivo = false;
         static bool logDebug = false;
-
+        static String ruta;
+        static bool selectLayers = false;
         static bool configuracionUsuario = false;
 
         static Double dlwdefault = 25;
 
-        static dwgFile dwgf = new dwgFile();
-
-        static String ruta;
+        static dwgFile dwgf = new dwgFile();        
 
         [CommandMethod("serializarDWG")]
         public static void serializarDWG()
@@ -54,17 +54,17 @@ namespace fi.upm.es.dwgDecoder
             configuracionUsuario = ConfiguracionUsuario();
             if (configuracionUsuario == false)
             {
-                log("No ha sido posible realizar la configuración del usuario.", false);
-                log("Finalizando proceso de decodificación.", false);
+                log("No ha sido posible realizar la configuración del usuario.", false, false);
+                log("Finalizando proceso de decodificación.", false, false);
                 return;
             }
 
             // Reseteamos el dwgFile
-            log("Reseteando estructuras en memoria.",false);
+            log("Reseteando estructuras en memoria.",false, false);
             dwgf.resetDwgFile();
 
             // Tratamos de cargar el valor por defecto del ancho de linea.
-            log("Obteniendo el ancho de línea por defecto.",false);
+            log("Obteniendo el ancho de línea por defecto.",false, false);
             try
             {
                 String lwdefault = Application.GetSystemVariable("LWDEFAULT").ToString();
@@ -76,14 +76,14 @@ namespace fi.upm.es.dwgDecoder
             }
 
             // Abrimos una trasnaccion para poder empezar a operar con la bbdd de Autocad.
-            log("Abrimos transacción para empezar a trabajar con la BBDD de AutoCad.",false);
+            log("Abrimos transacción para empezar a trabajar con la BBDD de AutoCad.",false, false);
             using (Transaction t = db.TransactionManager.StartTransaction())
             {
-                log("Abrimos la tabla de capas.",false);
+                log("Abrimos la tabla de capas.",false, false);
                 // Leemos las capas
                 LayerTable acLyrTbl = (LayerTable)t.GetObject(db.LayerTableId, OpenMode.ForRead);
 
-                log("Procesamos las diferentes capas y las almacenamos en memoria.",false);
+                log("Procesamos las diferentes capas y las almacenamos en memoria.",false, false);
                 foreach (ObjectId acObjId in acLyrTbl)
                 {
                     LayerTableRecord acLyrTblRec = (LayerTableRecord)t.GetObject(acObjId, OpenMode.ForRead);
@@ -107,23 +107,36 @@ namespace fi.upm.es.dwgDecoder
                     
                     capa.default_gruesoLinea = (Double) acLyrTblRec.LineWeight;
                     
-                    //if (capa.nombreCapa == "1116-SENAL-RODADURA")
-                    //{
-                    dwgf.dwgCapas.Add(capa.objectId, capa);
-                    //}
-
-                    log("Procesada capa:" + acLyrTblRec.Name,false);                     
-                    
+                    // Preguntamos al usuario si decide procesar la capa.
+                    if (selectLayers == true)
+                    {
+                        String incluirCapa = IncluirCapa(capa);
+                        if (incluirCapa == "C")
+                        {
+                            log("Finalizando proceso de decodificación.", false, false);
+                            return;
+                        }
+                        if ((incluirCapa == "S") || (incluirCapa == "s"))
+                        {
+                            dwgf.dwgCapas.Add(capa.objectId, capa);
+                            log("Procesada capa:" + acLyrTblRec.Name, true, false);                     
+                        }
+                    }
+                    else
+                    {
+                        dwgf.dwgCapas.Add(capa.objectId, capa);
+                        log("Procesada capa:" + acLyrTblRec.Name, true, false);                     
+                    }            
                     // acLyrTblRec.LinetypeObjectId;
                     // acLyrTblRec.IsPersistent;
                     // acLyrTblRec.Transparency;             
                 }
 
-                log("Abrimos la tabla de bloques que contiene las entidades.", false);
+                log("Abrimos la tabla de bloques que contiene las entidades.", false, false);
                 // Open the Block table for read
                 BlockTable acBlkTbl = (BlockTable) t.GetObject(db.BlockTableId,OpenMode.ForWrite);
 
-                log("Abrimos la tabla de bloques - Model Space, única soportada por este proceso.", false);
+                log("Abrimos la tabla de bloques - Model Space, única soportada por este proceso.", false, false);
                 // Open the Block table record Model space for read
                 BlockTableRecord acBlkTblRec = (BlockTableRecord) t.GetObject(acBlkTbl[BlockTableRecord.ModelSpace],OpenMode.ForWrite);
                 
@@ -131,17 +144,17 @@ namespace fi.upm.es.dwgDecoder
                 foreach (ObjectId acObjId in acBlkTblRec)
                 {
                     Entity ent = (Entity)t.GetObject(acObjId, OpenMode.ForRead);
-                    log("Objeto a procesar : " + acObjId.ToString(), true);
+                    log("Objeto a procesar : " + acObjId.ToString(), true, true);
 
                     if (dwgf.dwgCapas.ContainsKey(ent.LayerId) == false) 
                     {
-                        log("No se procesa el objeto. Esta en una capa seleccionada para no ser tratada.", true);
+                        log("No se procesa el objeto. Esta en una capa seleccionada para no ser tratada.", true, true);
                         continue;
                     }
 
                     if (dwgf.objetosArtificiales.Contains(ent.ObjectId) == true)
                     {
-                        log("No se procesa el objeto. Es un objeto no original del mapa creado por este proceso.", true);
+                        log("No se procesa el objeto. Es un objeto no original del mapa creado por este proceso.", true, true);
                         continue;
                     }
 
@@ -153,17 +166,17 @@ namespace fi.upm.es.dwgDecoder
                         case "ARC":
                             ObjectId parentId = new ObjectId();
                             dwgDecoder.ProcesarObjetos(acObjId, acBlkTbl, acBlkTblRec, t, parentId);
-                            log("Procesado punto/linea/polylinea:/arco " + acObjId.ToString(),true);
+                            log("Procesado punto/linea/polylinea:/arco " + acObjId.ToString(),true,true);
                             break;                        
                         default:
-                            log("Tipo de objeto no reconocido por dwgDecoder: " + acObjId.ObjectClass.DxfName.ToString(), true);
+                            log("Tipo de objeto no reconocido por dwgDecoder: " + acObjId.ObjectClass.DxfName.ToString(), true, true);
                             break;
                     }
                 }
             }
 
             // exportXml.serializar(dwgf);
-            log("Exportamos al formato XML el contenido de la base de datos de Autocad.", false);
+            log("Exportamos al formato XML el contenido de la base de datos de Autocad.", false, false);
             exportXml.export2Xml(dwgf,ruta);
         }
 
@@ -185,7 +198,7 @@ namespace fi.upm.es.dwgDecoder
                     {
                         dwgf.dwgPuntos.Add(punto.objId, punto);
                     }
-                    log("Procesado punto: " + punto.objId.ToString(),true);
+                    log("Procesado punto: " + punto.objId.ToString(),true,true);
                     break;
                 case "LINE":
                     Line lorigen = (Line)ent;
@@ -198,7 +211,7 @@ namespace fi.upm.es.dwgDecoder
 
                     if (linea.LineWeight == -1)
                     {
-                        log("Ancho de la linea igual al ancho de la capa: " + linea.objId.ToString(), true);
+                        log("Ancho de la linea igual al ancho de la capa: " + linea.objId.ToString(), true, true);
                         // Reemplazar por el ancho de la capa.
                         linea.LineWeight = dlwdefault;
                         dwgCapa c;
@@ -212,7 +225,7 @@ namespace fi.upm.es.dwgDecoder
                     {
                         // -2: Reemplazar por el ancho del bloque. Esto habra que implementarlo cuando se de soporte a bloques.
                         // -3: ancho por defecto del autocad. Comando LWDEFAULT
-                        log("Ancho de la linea igual al del bloque o al ancho por defecto: " + linea.objId.ToString(), true);
+                        log("Ancho de la linea igual al del bloque o al ancho por defecto: " + linea.objId.ToString(), true, true);
                         linea.LineWeight = dlwdefault;
                     }
                     
@@ -247,7 +260,7 @@ namespace fi.upm.es.dwgDecoder
                     {
                         dwgf.dwgLineas.Add(linea.objId, linea);
                     }
-                    log("Procesada linea: " + linea.objId.ToString(),true);
+                    log("Procesada linea: " + linea.objId.ToString(), true, true);
                     break;
                 case "LWPOLYLINE":
                     dwgPolylinea poli = new dwgPolylinea();
@@ -257,7 +270,7 @@ namespace fi.upm.es.dwgDecoder
                     
                     // Descomponemos en subcomponentes.
                     DBObjectCollection entitySet = new DBObjectCollection();
-                    log("Descomponemos polylinea en lineas y puntos: " + poli.objId.ToString(), true);
+                    log("Descomponemos polylinea en lineas y puntos: " + poli.objId.ToString(), true, true);
                     entitySet = dwgDecoder.ObtenerPuntosyLineas(ent, acBlkTbl, acBlkTblRec, t);
                     
                     // Procesamos cada uno de los subcomponentes.
@@ -267,18 +280,18 @@ namespace fi.upm.es.dwgDecoder
                         switch (ent2.ObjectId.ObjectClass.DxfName)
                         {
                             case "LINE":
-                                log("Obtenida linea: " + poli.objId.ToString() + ":" + ent2.ObjectId.ToString(), true);
+                                log("Obtenida linea: " + poli.objId.ToString() + ":" + ent2.ObjectId.ToString(),true, true);
                                 poli.lineas.Add(ent2.ObjectId);
                                 break;
                             case "ARC":
-                                log("Obtenido arco: " + poli.objId.ToString() + ":" + ent2.ObjectId.ToString(), true);
+                                log("Obtenido arco: " + poli.objId.ToString() + ":" + ent2.ObjectId.ToString(), true, true);
                                 poli.arcos.Add(ent2.ObjectId);
                                 break;
                             default:
-                                log("Al descomponer polylinea, objeto no reconocido:" + ent2.ObjectId.ObjectClass.DxfName,true);
+                                log("Al descomponer polylinea, objeto no reconocido:" + ent2.ObjectId.ObjectClass.DxfName, true, true);
                                 break;
                         }
-                        log("Procesamos la nueva entidad obtenida - " + ent2.ObjectId.ObjectClass.DxfName + ":" + ent2.ObjectId, true);
+                        log("Procesamos la nueva entidad obtenida - " + ent2.ObjectId.ObjectClass.DxfName + ":" + ent2.ObjectId, true, true);
                         dwgDecoder.ProcesarObjetos(ent2.ObjectId, acBlkTbl, acBlkTblRec, t, poli.objId);
                         
                     }
@@ -287,7 +300,7 @@ namespace fi.upm.es.dwgDecoder
                     {
                         dwgf.dwgPolylineas.Add(poli.objId, poli);
                     }
-                    log("Procesada polilinea: " + poli.objId.ToString(),true);
+                    log("Procesada polilinea: " + poli.objId.ToString(),true, true);
                     break;
                 case "ARC":
                     dwgArco arco = new dwgArco();
@@ -296,7 +309,7 @@ namespace fi.upm.es.dwgDecoder
                     arco.parentId = parentId;
                     
                     // Descomponemos en subcomponentes.
-                    log("Descomponemos arco en lineas: " + arco.objId.ToString(), true);
+                    log("Descomponemos arco en lineas: " + arco.objId.ToString(), true, true);
                     DBObjectCollection entitySet2 = new DBObjectCollection();
                     
                     entitySet2 = herramientasCurvas.curvaAlineas((Curve)ent, 5, acBlkTbl, acBlkTblRec, t,arco.capaId, dwgf);
@@ -305,7 +318,7 @@ namespace fi.upm.es.dwgDecoder
                     // Solo pueden ser: lineas. Eso lo garantiza la funcion curvaAlineas
                     foreach (Entity ent2 in entitySet2)
                     {
-                        log("Nueva entidad - " + ent2.ObjectId.ObjectClass.DxfName + ":" + ent2.ObjectId, true);
+                        log("Nueva entidad - " + ent2.ObjectId.ObjectClass.DxfName + ":" + ent2.ObjectId, true, true);
                         arco.lineas.Add(ent2.ObjectId);
                         dwgDecoder.ProcesarObjetos(ent2.ObjectId, acBlkTbl, acBlkTblRec, t, arco.objId);                        
                     }
@@ -314,10 +327,10 @@ namespace fi.upm.es.dwgDecoder
                     {
                         dwgf.dwgArcos.Add(arco.objId, arco);
                     }
-                    log("Procesado arco: " + arco.objId.ToString(),true);
+                    log("Procesado arco: " + arco.objId.ToString(),true, true);
                     break;                
                 default:
-                    log("Elemento no reconocido para procesar. No procesado. " + acObjId.ObjectClass.ClassVersion.ToString(),true);
+                    log("Elemento no reconocido para procesar. No procesado. " + acObjId.ObjectClass.ClassVersion.ToString(),true,true);
                     break;
             }
             return;
@@ -367,14 +380,21 @@ namespace fi.upm.es.dwgDecoder
             return retorno;
         }
 
-        private static void log(String msg, bool debug)
+        private static void log(String msg, bool log, bool debug)
         {
-            if (logActivo == true)
+            if (log == false)
             {
-                if (((debug == true) && (logDebug == true)) || (debug == false))
+                ed.WriteMessage("\n[dwgDecoder] " + System.DateTime.Now.ToString() + ": " + msg);
+            }
+            else
+            {
+                if (logActivo == true)
                 {
-                    ed.WriteMessage("\n[dwgDecoder] " + System.DateTime.Now.ToString() + ": " + msg);
-                }                
+                    if (((debug == true) && (logDebug == true)) || (debug == false))
+                    {
+                        ed.WriteMessage("\n[dwgDecoder] " + System.DateTime.Now.ToString() + ": " + msg);
+                    }
+                }
             }
             return;
         }
@@ -458,18 +478,80 @@ namespace fi.upm.es.dwgDecoder
                     try
                     {
                         filePath = Path.GetFullPath(filePath);
-                        ed.WriteMessage("El fichero con toda la información sera creado en la ruta: " + filePath);
+                        log("El fichero con toda la información sera creado en la ruta: " + filePath,false,false);
                         ruta = filePath;
                     }
                     catch (System.Exception e)
                     {
-                        ed.WriteMessage("Error. No es una ruta válida");
+                        log("Error. No es una ruta válida",false,false);
                         ed.WriteMessage(e.ToString());
                         filePath = "";
                     }
                 }
             }
+
+            String userLayers = "";
+            while (userLayers == "")
+            {
+                PromptStringOptions pStrOpts = new PromptStringOptions("\nIntroduzca si desea configurar manualmente las capas a procesar (s/n): ");
+                PromptResult pStrRes = ed.GetString(pStrOpts);
+                if (pStrRes.Status == PromptStatus.Cancel)
+                {
+                    return false;
+                }
+                else if (pStrRes.Status == PromptStatus.OK)
+                {
+                    userLayers = pStrRes.StringResult;
+                    if ((userLayers == "S") || (userLayers == "s"))
+                    {
+                        selectLayers = true;
+                        break;
+                    }
+                    else if ((userLayers == "N") || (userLayers == "n"))
+                    {
+                        selectLayers = false;
+                        break;
+                    }
+                    else
+                    {
+                        userLayers = "";
+                    }
+                }
+            }
             return true;
+        }
+
+        private static String IncluirCapa(dwgCapa c)
+        {
+            String incluir = "";
+            while (incluir == "")
+            {
+                PromptStringOptions pStrOpts = new PromptStringOptions("\nIntroduzca si desea procesar la capa " + c.nombreCapa + "(" + c.objectId.ToString() + ") (s/n): ");
+                PromptResult pStrRes = ed.GetString(pStrOpts);
+                if (pStrRes.Status == PromptStatus.Cancel)
+                {
+                    incluir = "C";
+                    break;
+                }
+                else if (pStrRes.Status == PromptStatus.OK)
+                {
+                    incluir = pStrRes.StringResult;
+                    if ((incluir == "S") || (incluir == "s"))
+                    {
+                        break;
+                    }
+                    else if ((incluir == "N") || (incluir == "n"))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        incluir = "";
+                    }
+                }
+            }
+
+            return incluir;
         }
     }    
 }
