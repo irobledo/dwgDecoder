@@ -36,7 +36,8 @@ namespace fi.upm.es.dwgDecoder
     {
         static Database db = Application.DocumentManager.MdiActiveDocument.Database;
         static Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
-        
+        static Document doc = Application.DocumentManager.MdiActiveDocument;
+
         static bool logActivo = false;
         static bool logDebug = false;
         static String ruta;
@@ -62,7 +63,8 @@ namespace fi.upm.es.dwgDecoder
             // Reseteamos el dwgFile
             log("Reseteando estructuras en memoria.",false, false);
             dwgf.resetDwgFile();
-
+            dwgf.nombre_fichero_original = doc.Name;
+            
             // Tratamos de cargar el valor por defecto del ancho de linea.
             log("Obteniendo el ancho de línea por defecto.",false, false);
             try
@@ -193,6 +195,11 @@ namespace fi.upm.es.dwgDecoder
                     punto.capaId = ent.LayerId;
                     punto.parentId = parentId;
                     punto.coordenadas = porigen.Position;
+                    punto.colorPunto = porigen.Color;
+                    punto.color_R = porigen.Color.Red;
+                    punto.color_G = porigen.Color.Green;
+                    punto.color_B = porigen.Color.Blue;
+
                     
                     if (dwgf.dwgPuntos.ContainsKey(punto.objId) == false)
                     {
@@ -206,6 +213,10 @@ namespace fi.upm.es.dwgDecoder
                     linea.objId = acObjId;
                     linea.capaId = ent.LayerId;
                     linea.parentId = parentId;
+                    linea.colorLinea = lorigen.Color;
+                    linea.color_R = lorigen.Color.Red;
+                    linea.color_G = lorigen.Color.Green;
+                    linea.color_B = lorigen.Color.Blue;
 
                     linea.LineWeight = (Double)lorigen.LineWeight;
 
@@ -303,11 +314,31 @@ namespace fi.upm.es.dwgDecoder
                     log("Procesada polilinea: " + poli.objId.ToString(),true, true);
                     break;
                 case "ARC":
+                    Arc ar = (Arc) ent;
                     dwgArco arco = new dwgArco();
                     arco.objId = acObjId;
                     arco.capaId = ent.LayerId;
                     arco.parentId = parentId;
-                    
+                    arco.radio = ar.Radius;
+                    arco.angulo_inicio = ar.StartAngle;
+                    arco.angulo_final = ar.EndAngle;
+
+                    DBPoint p_centro = new DBPoint(ar.Center);
+                    acBlkTblRec.AppendEntity(p_centro);
+                    t.AddNewlyCreatedDBObject(p_centro, true);
+                                        
+                    dwgPunto p_centro_1 = new dwgPunto();
+                    p_centro_1.objId = p_centro.ObjectId;
+                    p_centro_1.coordenadas = p_centro.Position;
+                    p_centro_1.capaId = arco.capaId;
+
+                    if (dwgf.dwgPuntos.ContainsKey(p_centro_1.objId) == false)
+                    {
+                        dwgf.dwgPuntos.Add(p_centro_1.objId, p_centro_1);
+                    }
+
+                    arco.punto_centro = p_centro_1.objId;
+
                     // Descomponemos en subcomponentes.
                     log("Descomponemos arco en lineas: " + arco.objId.ToString(), true, true);
                     DBObjectCollection entitySet2 = new DBObjectCollection();

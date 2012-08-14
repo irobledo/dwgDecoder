@@ -11,6 +11,12 @@ namespace fi.upm.es.dwgDecoder.dwgElementos
     {
         public List<ObjectId> lineas = new List<ObjectId>();
 
+        public Double radio;
+        public Double angulo_inicio;
+        public Double angulo_final;
+
+        public ObjectId punto_centro;
+
         public override String ToString()
         {
             StringBuilder sb = new StringBuilder();

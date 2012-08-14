@@ -63,7 +63,7 @@ namespace fi.upm.es.dwgDecoder.tools
             XmlNode xmlelement = xmldoc.CreateElement("plano");
             
             XmlAttribute xmlattribute = xmldoc.CreateAttribute("nombre_fichero");
-            xmlattribute.Value = "";
+            xmlattribute.Value = dwgf.nombre_fichero_original;
             xmlelement.Attributes.Append(xmlattribute);
 
             xmlattribute = xmldoc.CreateAttribute("fecha_fichero");
@@ -71,7 +71,7 @@ namespace fi.upm.es.dwgDecoder.tools
             xmlelement.Attributes.Append(xmlattribute);
 
             xmlattribute = xmldoc.CreateAttribute("fecha_procesamiento");
-            xmlattribute.Value = "";
+            xmlattribute.Value = System.DateTime.Now.ToString();
             xmlelement.Attributes.Append(xmlattribute);
 
             xmldoc.AppendChild(xmlelement);
@@ -228,7 +228,13 @@ namespace fi.upm.es.dwgDecoder.tools
             xmlattribute = xmldoc.CreateAttribute("coord_y");
             xmlattribute.Value = p.coordenadas.Y.ToString();
             punto.Attributes.Append(xmlattribute);
-            
+
+            XmlElement color = rgb2xml(p.color_R, p.color_G, p.color_B, xmldoc);
+            punto.AppendChild(color);
+
+            XmlElement mapa = xmldoc.CreateElement("mapa_atributos");
+            punto.AppendChild(mapa);
+
             return punto;
         }
 
@@ -250,6 +256,12 @@ namespace fi.upm.es.dwgDecoder.tools
             xmlattribute = xmldoc.CreateAttribute("ancho");
             xmlattribute.Value = l.LineWeight.ToString();
             linea.Attributes.Append(xmlattribute);
+
+            XmlElement color = rgb2xml(l.color_R, l.color_G, l.color_B, xmldoc);
+            linea.AppendChild(color);
+
+            XmlElement mapa = xmldoc.CreateElement("mapa_atributos");
+            linea.AppendChild(mapa);
 
             /*
             xmlattribute = xmldoc.CreateAttribute("parent_id");
@@ -282,6 +294,10 @@ namespace fi.upm.es.dwgDecoder.tools
                 XmlElement arco = exportXml.arco2xml(obj2, xmldoc, capaId, dwgf);
                 polylinea.AppendChild(arco);
             }
+
+            XmlElement mapa = xmldoc.CreateElement("mapa_atributos");
+            polylinea.AppendChild(mapa);
+
             return polylinea;
         }
 
@@ -292,6 +308,22 @@ namespace fi.upm.es.dwgDecoder.tools
             xmlattribute.Value = a.objId.ToString();
             arco.Attributes.Append(xmlattribute);
 
+            xmlattribute = xmldoc.CreateAttribute("radio");
+            xmlattribute.Value = a.radio.ToString();
+            arco.Attributes.Append(xmlattribute);
+
+            xmlattribute = xmldoc.CreateAttribute("angulo_inicio");
+            xmlattribute.Value = a.angulo_inicio.ToString();
+            arco.Attributes.Append(xmlattribute);
+
+            xmlattribute = xmldoc.CreateAttribute("angulo_final");
+            xmlattribute.Value = a.angulo_final.ToString();
+            arco.Attributes.Append(xmlattribute);
+
+            xmlattribute = xmldoc.CreateAttribute("center_point_id");
+            xmlattribute.Value = a.punto_centro.ToString();
+            arco.Attributes.Append(xmlattribute);
+
             var puntolinea2 = dwgf.dwgLineas.Values.Where(x => x.capaId.ToString() == capaId.ToString() && x.parentId.ToString() == a.objId.ToString());
 
             foreach (dwgLinea obj2 in puntolinea2)
@@ -299,6 +331,9 @@ namespace fi.upm.es.dwgDecoder.tools
                 XmlElement linea = exportXml.linea2xml(obj2, xmldoc);
                 arco.AppendChild(linea);
             }
+
+            XmlElement mapa = xmldoc.CreateElement("mapa_atributos");
+            arco.AppendChild(mapa);
 
             return arco;
         }

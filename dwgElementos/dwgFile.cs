@@ -22,8 +22,14 @@ namespace fi.upm.es.dwgDecoder.dwgElementos
 
         public List<ObjectId> objetosArtificiales = new List<ObjectId>();
 
+        public String nombre_fichero_original;
+
+        public String fecha_fichero_original;
+
         public void resetDwgFile()
         {
+            this.nombre_fichero_original = "";
+            this.fecha_fichero_original = "";
             this.dwgCapas.Clear();
             this.dwgPuntos.Clear();
             this.dwgLineas.Clear();

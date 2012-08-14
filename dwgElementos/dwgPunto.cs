@@ -4,12 +4,19 @@ using System.Linq;
 using System.Text;
 
 using Autodesk.AutoCAD.Geometry;
+using Autodesk.AutoCAD.Colors;
 
 namespace fi.upm.es.dwgDecoder.dwgElementos
 {
     public class dwgPunto : dwgEntidadBase
     {
         public Point3d coordenadas;
+
+        public Color colorPunto;
+        public int color_R;
+        public int color_G;
+        public int color_B;
+
 
         public override String ToString()
         {
