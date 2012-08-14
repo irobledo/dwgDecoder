@@ -31,23 +31,100 @@ namespace fi.upm.es.dwgDecoder
 
     // 7.ATRIBUTOS PARA LA CAPA
     // - ID: IDENTIFICADOR UNIVOCO
-    // - NOMBRE DE LA CAPA     
+    // - NOMBRE DE LA CAPA    
+ 
+    /** 
+     * @brief   Clase que implementa el plugin de Autocad. Contiene toda la lógica de decodificación
+     *          de la base de datos DWG, todo la logica de almacenamiento en estructuras en memoria y 
+     *          toda la interacción con el usuario.
+     */
+
     public class dwgDecoder
     {
+        /**
+         * @brief   Variable estatica del tipo "Autodesk.AutoCAD.DatabaseServices.Database
+         *          que sera la referencia en todo momento del plugin para el acceso y el manipulado
+         *          del contenido del fichero de AutoCAD. Cada vez que se invoca  el plugin se 
+         *          asocia a la base de datos del fichero activo que hay en ese momento en la 
+         *          ventana del Autocad
+         */
         static Database db;
+        
+        /**
+         * @brief   Variable estatica del tipo "Autodesk.AutoCAD.EditorInput.Editor
+         *          que sera la referencia en todo momento del plugin para la interacción con
+         *          el usuario, ya sea para mostrar mensajes o para pedir información al usuario.
+         *          Cada vez que se invoca el plugin se asocia al editor activo que hay en ese momento
+         *          en la ventana del Autocad.
+         */
         static Editor ed;
+        
+        /**
+         * @brief   Variable estatica del tipo "Autodesk.AutoCAD.ApplicationServicies.Document
+         *          que sera la referencia en todo momento del plugin del documento activo en la
+         *          ventana de Autodesk.Cada vez que se invoca el plugin se asocia al documento 
+         *          activo que hay en ese momento en la ventana del Autocad.
+         */
         static Document doc;
 
+        /**
+         * @brief   Variable estatica que indica si el plugin debe generar informacion de log
+         */
         static bool logActivo = false;
+        
+        /**
+         * @brief   Variable estatica que indica si el plugin debe generar de debug junto a la informacion de log.
+         *          Para poder generarse es necesario que la información de log este activada.
+         */
         static bool logDebug = false;
+        
+        /**
+         * @brief   Variable estatica que indica donde se guardará el fichero XML con la salida final
+         *          del proceso.
+         */
         static String ruta;
+        
+        /**
+         * @brief   Variable estatica que indica si el usuario va a realizar una seleccion manual de
+         *          las capas del fichero DWG que deben ser procesadas.
+         */
         static bool selectLayers = false;
+        
+        /**
+         * @brief   Variable estatica que indica si la configuración solicitada al usuario ha sido
+         *          recibida y procesada de forma correcta.
+         */
         static bool configuracionUsuario = false;
-
+        
+        /**
+         * @brief   Variable estatica que indica el ancho por defecto que tendran las líneas en el caso
+         *          de no poder leer esta información del propio fichero DWG.
+         */
         static Double dlwdefault = 25;
+        
+        /**
+         * @brief   Variable estatica que referencia a un objeto dwgFile que contendrá toda la información
+         *          extraida de la base de datos del fichero DWG de AutoCad. Este fichero será el que luego
+         *          se vuelque a un formato XML.
+         */
+        static dwgFile dwgf = new dwgFile();
 
-        static dwgFile dwgf = new dwgFile();        
-
+        /**
+         * @brief   Metodo que implementa el comando "serializarDWG" dentro del propio AutoCAD y que se
+         *          encarga de extraer toda la información necesaria de la base de datos del propio 
+         *          fichero DWG y almacenarla de forma estructurada en la variable dwgf.
+         *          
+         *          [CommandMethod("serializarDWG")] indica a AUTOCAD el nombre del nuevo comando a implementar.
+         *          
+         *          El proceso funciona en dos 4 etapas principales:
+         *          
+         *          1) Solicitar la configuración necesaria por parte del usuario:<br/><br/>
+         *              1.1)    ¿Activar el log?<br/>
+         *              1.2)    ¿Incorporar información de debug al log?<br/>
+         *              1.3)    Indicar la ruta donde se guardará el fichero de salida con el contenido de la base de datos
+         *                      de Autocad.<br/>
+         *              1.4)    ¿Seleccionará el usuario manualmente las capas a procesar?<br/>
+         */
         [CommandMethod("serializarDWG")]
         public static void serializarDWG()
         {
