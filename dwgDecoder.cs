@@ -34,9 +34,9 @@ namespace fi.upm.es.dwgDecoder
     // - NOMBRE DE LA CAPA     
     public class dwgDecoder
     {
-        static Database db = Application.DocumentManager.MdiActiveDocument.Database;
-        static Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
-        static Document doc = Application.DocumentManager.MdiActiveDocument;
+        static Database db;
+        static Editor ed;
+        static Document doc;
 
         static bool logActivo = false;
         static bool logDebug = false;
@@ -51,6 +51,10 @@ namespace fi.upm.es.dwgDecoder
         [CommandMethod("serializarDWG")]
         public static void serializarDWG()
         {
+            db = Application.DocumentManager.MdiActiveDocument.Database;
+            ed = Application.DocumentManager.MdiActiveDocument.Editor;
+            doc = Application.DocumentManager.MdiActiveDocument;
+
             // Solicitamos configuración al usuario.
             configuracionUsuario = ConfiguracionUsuario();
             if (configuracionUsuario == false)
@@ -108,6 +112,10 @@ namespace fi.upm.es.dwgDecoder
                     capa.enUso = acLyrTblRec.IsUsed;
                     
                     capa.default_gruesoLinea = (Double) acLyrTblRec.LineWeight;
+                    if ((capa.default_gruesoLinea == -1) || (capa.default_gruesoLinea == -2) || (capa.default_gruesoLinea == -3))
+                    {
+                        capa.default_gruesoLinea = dlwdefault;
+                    }
                     
                     // Preguntamos al usuario si decide procesar la capa.
                     if (selectLayers == true)
@@ -432,41 +440,12 @@ namespace fi.upm.es.dwgDecoder
 
         private static bool ConfiguracionUsuario()
         {
-            String userLog = "";
-            while (userLog == "")
+            try
             {
-                PromptStringOptions pStrOpts = new PromptStringOptions("\nIntroduzca si desea log de la decodificación (s/n): ");
-                PromptResult pStrRes = ed.GetString(pStrOpts);
-                if (pStrRes.Status == PromptStatus.Cancel)
+                String userLog = "";
+                while (userLog == "")
                 {
-                    return false;
-                }
-                else if (pStrRes.Status == PromptStatus.OK)
-                {
-                    userLog = pStrRes.StringResult;
-                    if ((userLog == "S") || (userLog == "s"))
-                    {
-                        logActivo = true;
-                        break;
-                    }
-                    else if ((userLog == "N") || (userLog == "n"))
-                    {
-                        logActivo = false;
-                        break;
-                    }
-                    else
-                    {
-                        userLog = "";
-                    }
-                }
-            }
-
-            if (logActivo == true)
-            {
-                String userDebug = "";
-                while (userDebug == "")
-                {
-                    PromptStringOptions pStrOpts = new PromptStringOptions("\nIntroduzca si desea un log con información de debug del proceso de decodificación (s/n): ");
+                    PromptStringOptions pStrOpts = new PromptStringOptions("\nIntroduzca si desea log de la decodificación (s/n): ");
                     PromptResult pStrRes = ed.GetString(pStrOpts);
                     if (pStrRes.Status == PromptStatus.Cancel)
                     {
@@ -474,82 +453,120 @@ namespace fi.upm.es.dwgDecoder
                     }
                     else if (pStrRes.Status == PromptStatus.OK)
                     {
-                        userDebug = pStrRes.StringResult;
-                        if ((userDebug == "S") || (userDebug == "s"))
+                        userLog = pStrRes.StringResult;
+                        if ((userLog == "S") || (userLog == "s"))
                         {
-                            logDebug = true;
+                            logActivo = true;
                             break;
                         }
-                        else if ((userDebug == "N") || (userDebug == "n"))
+                        else if ((userLog == "N") || (userLog == "n"))
                         {
-                            logDebug = false;
+                            logActivo = false;
                             break;
                         }
                         else
                         {
-                            userDebug = "";
+                            userLog = "";
                         }
                     }
                 }
-            }
 
-            // System.IO.Path.IsPathRooted(@"c:\foo"); 
-            String filePath = "";
-            while (filePath == "")
-            {
-                PromptStringOptions pStrOpts = new PromptStringOptions("\nIntroduzca el nombre del fichero (ruta completa) donde quiere guardar la salida del proceso: ");
-                PromptResult pStrRes = ed.GetString(pStrOpts);
-                if (pStrRes.Status == PromptStatus.Cancel)
+                if (logActivo == true)
                 {
-                    return false;
-                }
-                else if (pStrRes.Status == PromptStatus.OK)
-                {
-                    filePath = pStrRes.StringResult;
-                    try
+                    String userDebug = "";
+                    while (userDebug == "")
                     {
-                        filePath = Path.GetFullPath(filePath);
-                        log("El fichero con toda la información sera creado en la ruta: " + filePath,false,false);
-                        ruta = filePath;
-                    }
-                    catch (System.Exception e)
-                    {
-                        log("Error. No es una ruta válida",false,false);
-                        ed.WriteMessage(e.ToString());
-                        filePath = "";
+                        PromptStringOptions pStrOpts = new PromptStringOptions("\nIntroduzca si desea un log con información de debug del proceso de decodificación (s/n): ");
+                        PromptResult pStrRes = ed.GetString(pStrOpts);
+                        if (pStrRes.Status == PromptStatus.Cancel)
+                        {
+                            return false;
+                        }
+                        else if (pStrRes.Status == PromptStatus.OK)
+                        {
+                            userDebug = pStrRes.StringResult;
+                            if ((userDebug == "S") || (userDebug == "s"))
+                            {
+                                logDebug = true;
+                                break;
+                            }
+                            else if ((userDebug == "N") || (userDebug == "n"))
+                            {
+                                logDebug = false;
+                                break;
+                            }
+                            else
+                            {
+                                userDebug = "";
+                            }
+                        }
                     }
                 }
-            }
 
-            String userLayers = "";
-            while (userLayers == "")
-            {
-                PromptStringOptions pStrOpts = new PromptStringOptions("\nIntroduzca si desea configurar manualmente las capas a procesar (s/n): ");
-                PromptResult pStrRes = ed.GetString(pStrOpts);
-                if (pStrRes.Status == PromptStatus.Cancel)
+                // System.IO.Path.IsPathRooted(@"c:\foo"); 
+                String filePath = "";
+                while (filePath == "")
                 {
-                    return false;
+                    PromptStringOptions pStrOpts = new PromptStringOptions("\nIntroduzca el nombre del fichero (ruta completa) donde quiere guardar la salida del proceso: ");
+                    PromptResult pStrRes = ed.GetString(pStrOpts);
+                    if (pStrRes.Status == PromptStatus.Cancel)
+                    {
+                        return false;
+                    }
+                    else if (pStrRes.Status == PromptStatus.OK)
+                    {
+                        filePath = pStrRes.StringResult;
+                        try
+                        {
+                            filePath = Path.GetFullPath(filePath);
+                            log("El fichero con toda la información sera creado en la ruta: " + filePath, false, false);
+                            ruta = filePath;
+                        }
+                        catch (System.Exception e)
+                        {
+                            log("Error. No es una ruta válida", false, false);
+                            log(e.ToString(),false,false);
+                            filePath = "";
+                        }
+                    }
                 }
-                else if (pStrRes.Status == PromptStatus.OK)
+
+                String userLayers = "";
+                while (userLayers == "")
                 {
-                    userLayers = pStrRes.StringResult;
-                    if ((userLayers == "S") || (userLayers == "s"))
+                    PromptStringOptions pStrOpts = new PromptStringOptions("\nIntroduzca si desea configurar manualmente las capas a procesar (s/n): ");
+                    PromptResult pStrRes = ed.GetString(pStrOpts);
+                    if (pStrRes.Status == PromptStatus.Cancel)
                     {
-                        selectLayers = true;
-                        break;
+                        return false;
                     }
-                    else if ((userLayers == "N") || (userLayers == "n"))
+                    else if (pStrRes.Status == PromptStatus.OK)
                     {
-                        selectLayers = false;
-                        break;
-                    }
-                    else
-                    {
-                        userLayers = "";
+                        userLayers = pStrRes.StringResult;
+                        if ((userLayers == "S") || (userLayers == "s"))
+                        {
+                            selectLayers = true;
+                            break;
+                        }
+                        else if ((userLayers == "N") || (userLayers == "n"))
+                        {
+                            selectLayers = false;
+                            break;
+                        }
+                        else
+                        {
+                            userLayers = "";
+                        }
                     }
                 }
+                return true;
             }
-            return true;
+            catch (System.Exception e)
+            {
+                log("No ha sido posible realizar la configuración de usuario.", false, false);
+                log(e.ToString(), false, false);
+                return false;
+            }
         }
 
         private static String IncluirCapa(dwgCapa c)
