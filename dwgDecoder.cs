@@ -123,7 +123,16 @@ namespace fi.upm.es.dwgDecoder
          *              1.2)    ¿Incorporar información de debug al log?<br/>
          *              1.3)    Indicar la ruta donde se guardará el fichero de salida con el contenido de la base de datos
          *                      de Autocad.<br/>
-         *              1.4)    ¿Seleccionará el usuario manualmente las capas a procesar?<br/>
+         *              1.4)    ¿Seleccionará el usuario manualmente las capas a procesar?<br/><br/>
+         * 
+         *           2) Leer el conjunto de capas disponible para ser analizadas y si el usuario lo
+         *              ha configurado, solicitarle que seleccione cuales quiere utilizar en el proceso.<br/><br/>
+         *
+         *           3) Analizar cada una de las entidades dentro del fichero siempre que este dentro de una de las capas
+         *              a procesar y sea una de las entidades reconocidas: punto, linea, polilinea y arco.<br/><br/>
+         *  
+         *           4) Exportar toda la información resultante a un fichero XML configurado por el usuario.
+         *
          */
         [CommandMethod("serializarDWG")]
         public static void serializarDWG()
@@ -267,7 +276,11 @@ namespace fi.upm.es.dwgDecoder
             exportXml.export2Xml(dwgf,ruta);
         }
 
-
+        /**
+         * @brief   Metodo que contiene toda la lógica para procesar cada tipo de entidad. En función del tipo de entidad crea las estructuras
+         *          en memoria necesarias y almacena toda la información en la clase dwgFile para que posteriormente sea explotada.
+         *          
+         **/
         private static void ProcesarObjetos(ObjectId acObjId, BlockTable acBlkTbl, BlockTableRecord acBlkTblRec, Transaction t, ObjectId parentId)
         {
             Entity ent = (Entity)t.GetObject(acObjId, OpenMode.ForRead);
@@ -452,6 +465,18 @@ namespace fi.upm.es.dwgDecoder
             return;
         }
 
+        /**
+         * @brief   Metodo que descompone una enitdad AUTOCAD en sub-entidades cuando es posible. Replica el comportamiento del comando 
+         *          DESCOMPONER / EXPLODE de AutoCAD. Las unidades básicas que devuelve son puntos y lineas. Descompone recursivamente
+         *          las entidades hasta dejarlas representadas como puntos, lineas y arcos.
+         *          
+         * @param   ent         Entidad que debe ser descompuesta
+         * @param   acBlkTbl    Tabla de bloques de AutoCAD para buscar nuevos objetos y añadir nuevos objetos generados.
+         * @param   acBlkTblRec Tabla de registros de los bloques de AutoCAD para buscar nuevos objetos y añadir nuevos objetos generados.
+         * @param   t           Transaccion abierta para manipular la tabla de bloques de AutoCAD.
+         * 
+         * @return              Devuelve una colección de entidades bajo la clase DBObjectCollection.
+         **/
         private static DBObjectCollection ObtenerPuntosyLineas(Entity ent, BlockTable acBlkTbl, BlockTableRecord acBlkTblRec, Transaction t)
         {
             DBObjectCollection retorno = new DBObjectCollection();
@@ -496,6 +521,17 @@ namespace fi.upm.es.dwgDecoder
             return retorno;
         }
 
+        /**
+         * @brief   Metodo que controla el volcado de información hacia el usuario final (control de log).
+         *          Cualquier salida que quiera enviarse hacia el usuario o cualquier log de la aplicación
+         *          debe realizarse a través de este método.
+         *  
+         * @param   msg     Mensaje que quiere enviarse por la salida al usuario o al log de la aplicación.
+         * @param   log     Parámetro booleano que identifica si el mensaje es un mensaje de log (true) o un mensaje estadar para el usuario (false)
+         * @param   debug   Parámetro booleano que identifica si el mensaje de log es un mensaje de log estandar o cotiene información de
+         *                  debug del proceso.         *                  
+         *                  
+         **/
         private static void log(String msg, bool log, bool debug)
         {
             if (log == false)
@@ -515,6 +551,16 @@ namespace fi.upm.es.dwgDecoder
             return;
         }
 
+        /**
+         * @brief   Metodo que contiene toda la lógica de interacción con el usuario final para realizar la 
+         *          configuración necesaria del proceso:<br/><br/>
+         *          
+         *          1) Activación del log (s/n).<br/>
+         *          2) En caso afirmativo, activación de la información de debug.<br/>
+         *          3) Ruta del fichero donde se guardará la información obtenida de la base de datos de AutoCAD.<br/>
+         *          4) Selección manual de las capas a procesar (s/n)
+         *          
+         * */
         private static bool ConfiguracionUsuario()
         {
             try
@@ -645,7 +691,18 @@ namespace fi.upm.es.dwgDecoder
                 return false;
             }
         }
-
+        /**
+         * @brief   Metodo que contiene toda la lógica de interacción con el usuario final para decidir si
+         *          una capa concreta debe ser procesada.
+         *          
+         * @param   c   Objeto de tipo dwgCapa que contiene toda la información obtenida de la capa.
+         *
+         * @return  Retorna una cadena de texto con 3 valores posibles:<br/><br/>
+         *              1) C: Cancelar el proceso.<br/>
+         *              2) S: incluir la capa en el proceso de extracción de la información.<br/>
+         *              3) N: no incluir la capa en el proceso de extracción de la información.<br/>
+         *              
+         * */        
         private static String IncluirCapa(dwgCapa c)
         {
             String incluir = "";
