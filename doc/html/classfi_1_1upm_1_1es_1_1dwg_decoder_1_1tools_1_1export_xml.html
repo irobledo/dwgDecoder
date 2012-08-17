@@ -29,6 +29,7 @@
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -55,27 +56,40 @@
 <div class="title">fi.upm.es.dwgDecoder.tools.exportXml Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Clase que implementa los metodos para exportar la información obtenida de la base de datos de AutoCAD a ficheros de texto en diferentes formatos.  
+ <a href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1tools_1_1export_xml.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a53c228aa3fedc3867c6943ae0d8f9fcd"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1tools_1_1export_xml.html#a53c228aa3fedc3867c6943ae0d8f9fcd">serializar</a> (<a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_file.html">dwgFile</a> dwgf, String ruta)</td></tr>
+<tr class="memdesc:a53c228aa3fedc3867c6943ae0d8f9fcd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Metodo que envia a un fichero de texto el contenido completo de una clase dwgFILE.  <a href="#a53c228aa3fedc3867c6943ae0d8f9fcd"></a><br/></td></tr>
 <tr class="separator:a53c228aa3fedc3867c6943ae0d8f9fcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac668b3202e219bbd76d3c51550a4ab78"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1tools_1_1export_xml.html#ac668b3202e219bbd76d3c51550a4ab78">export2Xml</a> (<a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_file.html">dwgFile</a> dwgf, String ruta)</td></tr>
+<tr class="memdesc:ac668b3202e219bbd76d3c51550a4ab78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Metodo que envia a un fichero XML el contenido completo de una clase dwgFILE.  <a href="#ac668b3202e219bbd76d3c51550a4ab78"></a><br/></td></tr>
 <tr class="separator:ac668b3202e219bbd76d3c51550a4ab78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad15157aad838374e503aa623fe3fae3e"><td class="memItemLeft" align="right" valign="top">static XmlElement&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1tools_1_1export_xml.html#ad15157aad838374e503aa623fe3fae3e">capa2xml</a> (<a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_capa.html">dwgCapa</a> c, XmlDocument xmldoc)</td></tr>
+<tr class="memdesc:ad15157aad838374e503aa623fe3fae3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Metodo que encapsula como debe formatearse en la salida XML un objeto del tipo dwgCapa.  <a href="#ad15157aad838374e503aa623fe3fae3e"></a><br/></td></tr>
 <tr class="separator:ad15157aad838374e503aa623fe3fae3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c83444a6700e7e5781550f9ec3bdc84"><td class="memItemLeft" align="right" valign="top">static XmlElement&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1tools_1_1export_xml.html#a9c83444a6700e7e5781550f9ec3bdc84">punto2xml</a> (<a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_punto.html">dwgPunto</a> p, XmlDocument xmldoc)</td></tr>
+<tr class="memdesc:a9c83444a6700e7e5781550f9ec3bdc84"><td class="mdescLeft">&#160;</td><td class="mdescRight">Metodo que encapsula como debe formatearse en la salida XML un objeto del tipo dwgPunto.  <a href="#a9c83444a6700e7e5781550f9ec3bdc84"></a><br/></td></tr>
 <tr class="separator:a9c83444a6700e7e5781550f9ec3bdc84"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6a6909375d244d8e027ab511870bafd2"><td class="memItemLeft" align="right" valign="top">static XmlElement&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1tools_1_1export_xml.html#a6a6909375d244d8e027ab511870bafd2">linea2xml</a> (<a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_linea.html">dwgLinea</a> l, XmlDocument xmldoc)</td></tr>
+<tr class="memdesc:a6a6909375d244d8e027ab511870bafd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Metodo que encapsula como debe formatearse en la salida XML un objeto del tipo dwgLinea.  <a href="#a6a6909375d244d8e027ab511870bafd2"></a><br/></td></tr>
 <tr class="separator:a6a6909375d244d8e027ab511870bafd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1195e965d228b4408574e868d38f224a"><td class="memItemLeft" align="right" valign="top">static XmlElement&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1tools_1_1export_xml.html#a1195e965d228b4408574e868d38f224a">polylinea2xml</a> (<a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_polylinea.html">dwgPolylinea</a> p, XmlDocument xmldoc, ObjectId capaId, <a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_file.html">dwgFile</a> dwgf)</td></tr>
+<tr class="memdesc:a1195e965d228b4408574e868d38f224a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Metodo que encapsula como debe formatearse en la salida XML un objeto del tipo dwgPolylinea.  <a href="#a1195e965d228b4408574e868d38f224a"></a><br/></td></tr>
 <tr class="separator:a1195e965d228b4408574e868d38f224a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a25cc0dc7281e59ff58b8e32f4d12139e"><td class="memItemLeft" align="right" valign="top">static XmlElement&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1tools_1_1export_xml.html#a25cc0dc7281e59ff58b8e32f4d12139e">arco2xml</a> (<a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_arco.html">dwgArco</a> a, XmlDocument xmldoc, ObjectId capaId, <a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_file.html">dwgFile</a> dwgf)</td></tr>
+<tr class="memdesc:a25cc0dc7281e59ff58b8e32f4d12139e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Metodo que encapsula como debe formatearse en la salida XML un objeto del tipo dwgArco.  <a href="#a25cc0dc7281e59ff58b8e32f4d12139e"></a><br/></td></tr>
 <tr class="separator:a25cc0dc7281e59ff58b8e32f4d12139e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abda9ba1fc6aab3bae05d9bd2931ea27c"><td class="memItemLeft" align="right" valign="top">static XmlElement&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1tools_1_1export_xml.html#abda9ba1fc6aab3bae05d9bd2931ea27c">rgb2xml</a> (int R, int G, int B, XmlDocument xmldoc)</td></tr>
+<tr class="memdesc:abda9ba1fc6aab3bae05d9bd2931ea27c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Metodo que encapsula como debe formatearse en la salida XML los atributos de color en formato RGB.  <a href="#abda9ba1fc6aab3bae05d9bd2931ea27c"></a><br/></td></tr>
 <tr class="separator:abda9ba1fc6aab3bae05d9bd2931ea27c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Clase que implementa los metodos para exportar la información obtenida de la base de datos de AutoCAD a ficheros de texto en diferentes formatos. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a25cc0dc7281e59ff58b8e32f4d12139e"></a>
 <div class="memitem">
 <div class="memproto">
@@ -120,6 +134,18 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Metodo que encapsula como debe formatearse en la salida XML un objeto del tipo dwgArco. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">a</td><td>Objeto del tipo dwgArco. </td></tr>
+    <tr><td class="paramname">xmldoc</td><td>Objeto de tipo XmlDocument al que se anexará la información del arco. </td></tr>
+    <tr><td class="paramname">capaId</td><td>Objeto del tipo ObjectId con el identificador de la capa a la que pertenece el arco. Esta capa será usada para asociarla a todas las lineas que haya al descomponer el arco. </td></tr>
+    <tr><td class="paramname">dwgf</td><td>Objeto del tipo dwgFile para buscar información adicional sobre lineas vinculadas al arco.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Devuelve un tipo XmlElement con la información del arco formateada para ser añadido en el documento xmldoc. </dd></dl>
+
 </div>
 </div>
 <a class="anchor" id="ad15157aad838374e503aa623fe3fae3e"></a>
@@ -153,6 +179,16 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Metodo que encapsula como debe formatearse en la salida XML un objeto del tipo dwgCapa. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">c</td><td>Objeto del tipo dwgCapa. </td></tr>
+    <tr><td class="paramname">xmldoc</td><td>Objeto de tipo XmlDocument al que se anexará la información de la capa.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Devuelve un tipo XmlElement con la información de la capa formateada para ser añadido en el documento xmldoc. </dd></dl>
 
 </div>
 </div>
@@ -188,6 +224,15 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Metodo que envia a un fichero XML el contenido completo de una clase dwgFILE. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dwgf</td><td>Objeto del tipo dwgFile que contiene todos los objetos leidos del fichero de AutoCAD. </td></tr>
+    <tr><td class="paramname">ruta</td><td>Ruta donde se guardará el fichero de texto con el contenido de la clase dwgFile. </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a class="anchor" id="a6a6909375d244d8e027ab511870bafd2"></a>
@@ -221,6 +266,16 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Metodo que encapsula como debe formatearse en la salida XML un objeto del tipo dwgLinea. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">l</td><td>Objeto del tipo dwgLinea. </td></tr>
+    <tr><td class="paramname">xmldoc</td><td>Objeto de tipo XmlDocument al que se anexará la información de la linea.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Devuelve un tipo XmlElement con la información de la linea formateada para ser añadido en el documento xmldoc. </dd></dl>
 
 </div>
 </div>
@@ -268,6 +323,18 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Metodo que encapsula como debe formatearse en la salida XML un objeto del tipo dwgPolylinea. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Objeto del tipo dwgPolylinea. </td></tr>
+    <tr><td class="paramname">xmldoc</td><td>Objeto de tipo XmlDocument al que se anexará la información de la polilinea. </td></tr>
+    <tr><td class="paramname">capaId</td><td>Objeto del tipo ObjectId con el identificador de la capa a la que pertenece la polilinea. Esta capa será usada para asociarla a todas las lineas y arcos que haya al descomponer la polilinea. </td></tr>
+    <tr><td class="paramname">dwgf</td><td>Objeto del tipo dwgFile para buscar información adicional sobre lineas y arcos vinculados a la polilinea.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Devuelve un tipo XmlElement con la información de la polilinea formateada para ser añadido en el documento xmldoc. </dd></dl>
+
 </div>
 </div>
 <a class="anchor" id="a9c83444a6700e7e5781550f9ec3bdc84"></a>
@@ -301,6 +368,16 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Metodo que encapsula como debe formatearse en la salida XML un objeto del tipo dwgPunto. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Objeto del tipo dwgPunto. </td></tr>
+    <tr><td class="paramname">xmldoc</td><td>Objeto de tipo XmlDocument al que se anexará la información del punto.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Devuelve un tipo XmlElement con la información del punto formateada para ser añadido en el documento xmldoc. </dd></dl>
 
 </div>
 </div>
@@ -348,6 +425,18 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Metodo que encapsula como debe formatearse en la salida XML los atributos de color en formato RGB. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">R</td><td>Valor del parámetro R </td></tr>
+    <tr><td class="paramname">G</td><td>Valor del parametro G </td></tr>
+    <tr><td class="paramname">B</td><td>Valor del parametro B </td></tr>
+    <tr><td class="paramname">xmldoc</td><td>Objeto de tipo XmlDocument al que se anexará la información del color.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Devuelve un tipo XmlElement con la información del color formateada para ser añadido al fichero XML contenido en el documento xmldoc. </dd></dl>
+
 </div>
 </div>
 <a class="anchor" id="a53c228aa3fedc3867c6943ae0d8f9fcd"></a>
@@ -382,6 +471,16 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Metodo que envia a un fichero de texto el contenido completo de una clase dwgFILE. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dwgf</td><td>Objeto del tipo dwgFile que contiene todos los objetos leidos del fichero de AutoCAD. </td></tr>
+    <tr><td class="paramname">ruta</td><td>Ruta donde se guardará el fichero de texto con el contenido de la clase dwgFile.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000004">Deprecated:</a></b></dt><dd>El método no esta completo dado que no se actualizo con los cambios sufridos en la clase dwgFile. Se uso en los primeros desarrollos para pequeñas validaciones y tareas de depuración.</dd></dl>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
@@ -390,7 +489,7 @@ Static Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Aug 16 2012 19:26:39 for dwgDecoder by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Aug 17 2012 12:56:27 for dwgDecoder by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.2
 </small></address>

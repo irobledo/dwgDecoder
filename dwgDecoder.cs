@@ -559,7 +559,9 @@ namespace fi.upm.es.dwgDecoder
          *          2) En caso afirmativo, activación de la información de debug.<br/>
          *          3) Ruta del fichero donde se guardará la información obtenida de la base de datos de AutoCAD.<br/>
          *          4) Selección manual de las capas a procesar (s/n)
-         *          
+         * 
+         * @return  Devuelve "Verdadero" si ha podido finalizar la configuración del usuario.<br/>
+         *          Devuelve "Falso" si el usuario ha cancelado la configuración o se ha producido un error.<br/>
          * */
         private static bool ConfiguracionUsuario()
         {

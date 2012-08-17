@@ -12,8 +12,23 @@ using fi.upm.es.dwgDecoder.dwgElementos;
 
 namespace fi.upm.es.dwgDecoder.tools
 {
+    /** 
+     * @brief   Clase que implementa los metodos para exportar la información obtenida de la base de datos
+     *          de AutoCAD a ficheros de texto en diferentes formatos.
+     */
     public static class exportXml
     {
+        /**
+         * @brief       Metodo que envia a un fichero de texto el contenido completo de una clase dwgFILE.
+         * 
+         * @param   dwgf    Objeto del tipo dwgFile que contiene todos los objetos leidos del fichero de AutoCAD.
+         * @param   ruta    Ruta donde se guardará el fichero de texto con el contenido de la clase dwgFile.
+         * 
+         * @deprecated  El método no esta completo dado que no se actualizo con los cambios sufridos en la
+         *              clase dwgFile. Se uso en los primeros desarrollos para pequeñas validaciones y tareas
+         *              de depuración.
+         *      
+         **/
         public static void serializar(dwgFile dwgf, String ruta)
         {
             using (StreamWriter writer = new StreamWriter(ruta))
@@ -51,6 +66,13 @@ namespace fi.upm.es.dwgDecoder.tools
             }
         }
 
+        /**
+         * @brief       Metodo que envia a un fichero XML el contenido completo de una clase dwgFILE.
+         *              
+         * @param   dwgf    Objeto del tipo dwgFile que contiene todos los objetos leidos del fichero de AutoCAD.
+         * @param   ruta    Ruta donde se guardará el fichero de texto con el contenido de la clase dwgFile.
+         *      
+         **/
         public static void export2Xml(dwgFile dwgf, String ruta)
         {
             XmlDocument xmldoc = new XmlDocument();
@@ -140,6 +162,15 @@ namespace fi.upm.es.dwgDecoder.tools
             return;
         }
 
+        /**
+         * @brief       Metodo que encapsula como debe formatearse en la salida XML un objeto del tipo dwgCapa.
+         *              
+         * @param   c    Objeto del tipo dwgCapa.
+         * @param   xmldoc  Objeto de tipo XmlDocument al que se anexará la información de la capa.
+         * 
+         * @return  Devuelve un tipo XmlElement con la información de la capa formateada para ser añadido en el documento xmldoc.
+         *      
+         **/
         public static XmlElement capa2xml(dwgCapa c, XmlDocument xmldoc)
         {
             XmlElement capa = xmldoc.CreateElement("capa");
@@ -214,6 +245,15 @@ namespace fi.upm.es.dwgDecoder.tools
             return capa;
         }
 
+        /**
+         * @brief       Metodo que encapsula como debe formatearse en la salida XML un objeto del tipo dwgPunto.
+         *              
+         * @param   p    Objeto del tipo dwgPunto.
+         * @param   xmldoc  Objeto de tipo XmlDocument al que se anexará la información del punto.
+         * 
+         * @return  Devuelve un tipo XmlElement con la información del punto formateada para ser añadido en el documento xmldoc.
+         *      
+         **/
         public static XmlElement punto2xml(dwgPunto p, XmlDocument xmldoc)
         {
             XmlElement punto = xmldoc.CreateElement("punto");
@@ -238,6 +278,15 @@ namespace fi.upm.es.dwgDecoder.tools
             return punto;
         }
 
+        /**
+         * @brief       Metodo que encapsula como debe formatearse en la salida XML un objeto del tipo dwgLinea.
+         *              
+         * @param   l    Objeto del tipo dwgLinea.
+         * @param   xmldoc  Objeto de tipo XmlDocument al que se anexará la información de la linea.
+         * 
+         * @return  Devuelve un tipo XmlElement con la información de la linea formateada para ser añadido en el documento xmldoc.
+         *      
+         **/
         public static XmlElement linea2xml(dwgLinea l, XmlDocument xmldoc)
         {
             XmlElement linea = xmldoc.CreateElement("linea");
@@ -272,9 +321,21 @@ namespace fi.upm.es.dwgDecoder.tools
             return linea;
         }
 
+        /**
+         * @brief   Metodo que encapsula como debe formatearse en la salida XML un objeto del tipo dwgPolylinea.
+         *              
+         * @param   p    Objeto del tipo dwgPolylinea.
+         * @param   xmldoc  Objeto de tipo XmlDocument al que se anexará la información de la polilinea.
+         * @param   capaId  Objeto del tipo ObjectId con el identificador de la capa a la que pertenece la polilinea. Esta capa será usada para asociarla a todas las lineas
+         *                  y arcos que haya al descomponer la polilinea.
+         * @param   dwgf    Objeto del tipo dwgFile para buscar información adicional sobre lineas y arcos vinculados a la polilinea.
+         * 
+         * @return  Devuelve un tipo XmlElement con la información de la polilinea formateada para ser añadido en el documento xmldoc.
+         *      
+         **/
         public static XmlElement polylinea2xml(dwgPolylinea p, XmlDocument xmldoc, ObjectId capaId, dwgFile dwgf)
         {
-            XmlElement polylinea = xmldoc.CreateElement("polylinea");
+            XmlElement polylinea = xmldoc.CreateElement("polilinea");
             XmlAttribute xmlattribute = xmldoc.CreateAttribute("id");
             xmlattribute.Value = p.objId.ToString();
             polylinea.Attributes.Append(xmlattribute);
@@ -301,6 +362,18 @@ namespace fi.upm.es.dwgDecoder.tools
             return polylinea;
         }
 
+        /**
+         * @brief   Metodo que encapsula como debe formatearse en la salida XML un objeto del tipo dwgArco.
+         *              
+         * @param   a    Objeto del tipo dwgArco.
+         * @param   xmldoc  Objeto de tipo XmlDocument al que se anexará la información del arco.
+         * @param   capaId  Objeto del tipo ObjectId con el identificador de la capa a la que pertenece el arco. Esta capa será usada para asociarla a todas las lineas
+         *                  que haya al descomponer el arco.
+         * @param   dwgf    Objeto del tipo dwgFile para buscar información adicional sobre lineas vinculadas al arco.
+         * 
+         * @return  Devuelve un tipo XmlElement con la información del arco formateada para ser añadido en el documento xmldoc.
+         *      
+         **/
         public static XmlElement arco2xml(dwgArco a, XmlDocument xmldoc, ObjectId capaId, dwgFile dwgf)
         {
             XmlElement arco = xmldoc.CreateElement("arco");
@@ -338,6 +411,17 @@ namespace fi.upm.es.dwgDecoder.tools
             return arco;
         }
 
+        /**
+         * @brief   Metodo que encapsula como debe formatearse en la salida XML los atributos de color en formato RGB.
+         *              
+         * @param   R    Valor del parámetro R
+         * @param   G    Valor del parametro G
+         * @param   B    Valor del parametro B
+         * @param   xmldoc  Objeto de tipo XmlDocument al que se anexará la información del color.
+         * 
+         * @return  Devuelve un tipo XmlElement con la información del color formateada para ser añadido al fichero XML contenido en el documento xmldoc.
+         *      
+         **/
         public static XmlElement rgb2xml(int R, int G, int B, XmlDocument xmldoc)
         {
             XmlElement rgb = xmldoc.CreateElement("color");

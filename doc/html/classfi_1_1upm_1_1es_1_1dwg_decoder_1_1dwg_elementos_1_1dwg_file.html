@@ -29,6 +29,7 @@
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -56,33 +57,47 @@
 <div class="title">fi.upm.es.dwgDecoder.dwgElementos.dwgFile Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Clase que contiene todas las entidades reconocidas y analizadas de un fichero de AutoCAD.  
+ <a href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_file.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a0f33c9ee58fbb9c0873f852d1d40f7cd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_file.html#a0f33c9ee58fbb9c0873f852d1d40f7cd">resetDwgFile</a> ()</td></tr>
+<tr class="memdesc:a0f33c9ee58fbb9c0873f852d1d40f7cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Metodo que inicializa y vacia todas las variables de la clase para poder ser utilizada la instancia con un fichero nuevo o lanzar un nuevo proceso de decodificación.  <a href="#a0f33c9ee58fbb9c0873f852d1d40f7cd"></a><br/></td></tr>
 <tr class="separator:a0f33c9ee58fbb9c0873f852d1d40f7cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a38e21887bf6581f390fd2723fb7dcf57"><td class="memItemLeft" align="right" valign="top">Dictionary&lt; ObjectId, <a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_capa.html">dwgCapa</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_file.html#a38e21887bf6581f390fd2723fb7dcf57">dwgCapas</a> = new Dictionary&lt;ObjectId,<a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_capa.html">dwgCapa</a>&gt;()</td></tr>
+<tr class="memdesc:a38e21887bf6581f390fd2723fb7dcf57"><td class="mdescLeft">&#160;</td><td class="mdescRight">Variable que contiene todas las capas (tipo <a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_capa.html" title="Clase que contiene los atributos de una Capa de AutoCAD.">dwgCapa</a>) analizadas.  <a href="#a38e21887bf6581f390fd2723fb7dcf57"></a><br/></td></tr>
 <tr class="separator:a38e21887bf6581f390fd2723fb7dcf57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd930bee961c2708ea3b3c74e7f51273"><td class="memItemLeft" align="right" valign="top">Dictionary&lt; ObjectId, <a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_punto.html">dwgPunto</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_file.html#abd930bee961c2708ea3b3c74e7f51273">dwgPuntos</a> = new Dictionary&lt;ObjectId, <a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_punto.html">dwgPunto</a>&gt;()</td></tr>
+<tr class="memdesc:abd930bee961c2708ea3b3c74e7f51273"><td class="mdescLeft">&#160;</td><td class="mdescRight">Variable que contiene todos los puntos (tipo <a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_punto.html" title="Clase que contiene los atributos de una entidad Punto de AutoCAD.">dwgPunto</a>) analizados.  <a href="#abd930bee961c2708ea3b3c74e7f51273"></a><br/></td></tr>
 <tr class="separator:abd930bee961c2708ea3b3c74e7f51273"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49adfb89676a067254bb3d7f8c622503"><td class="memItemLeft" align="right" valign="top">Dictionary&lt; ObjectId, <a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_linea.html">dwgLinea</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_file.html#a49adfb89676a067254bb3d7f8c622503">dwgLineas</a> = new Dictionary&lt;ObjectId, <a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_linea.html">dwgLinea</a>&gt;()</td></tr>
+<tr class="memdesc:a49adfb89676a067254bb3d7f8c622503"><td class="mdescLeft">&#160;</td><td class="mdescRight">Variable que contiene todas las líneas (tipo <a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_linea.html" title="Clase que contiene los atributos de una entidad Linea de AutoCAD.">dwgLinea</a>) analizadas.  <a href="#a49adfb89676a067254bb3d7f8c622503"></a><br/></td></tr>
 <tr class="separator:a49adfb89676a067254bb3d7f8c622503"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7afba49de735355fca9bd6f4d3a640a4"><td class="memItemLeft" align="right" valign="top">Dictionary&lt; ObjectId, <br class="typebreak"/>
 <a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_polylinea.html">dwgPolylinea</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_file.html#a7afba49de735355fca9bd6f4d3a640a4">dwgPolylineas</a> = new Dictionary&lt;ObjectId,<a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_polylinea.html">dwgPolylinea</a>&gt;()</td></tr>
+<tr class="memdesc:a7afba49de735355fca9bd6f4d3a640a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Variable que contiene todas las polilineas (tipo <a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_polylinea.html" title="Clase que contiene los atributos de una entidad Polilinea de AutoCAD.">dwgPolylinea</a>) analizadas.  <a href="#a7afba49de735355fca9bd6f4d3a640a4"></a><br/></td></tr>
 <tr class="separator:a7afba49de735355fca9bd6f4d3a640a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a73fe7317c26a5564311de607c2584075"><td class="memItemLeft" align="right" valign="top">Dictionary&lt; ObjectId, <a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_arco.html">dwgArco</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_file.html#a73fe7317c26a5564311de607c2584075">dwgArcos</a> = new Dictionary&lt;ObjectId, <a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_arco.html">dwgArco</a>&gt;()</td></tr>
+<tr class="memdesc:a73fe7317c26a5564311de607c2584075"><td class="mdescLeft">&#160;</td><td class="mdescRight">Variable que contiene todos las arcos (tipo <a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_arco.html" title="Clase que contiene los atributos de una entidad Arco de AutoCAD.">dwgArco</a>) analizados.  <a href="#a73fe7317c26a5564311de607c2584075"></a><br/></td></tr>
 <tr class="separator:a73fe7317c26a5564311de607c2584075"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab8e88b1a12f247fde1450329c30fc668"><td class="memItemLeft" align="right" valign="top">List&lt; ObjectId &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_file.html#ab8e88b1a12f247fde1450329c30fc668">objetosArtificiales</a> = new List&lt;ObjectId&gt;()</td></tr>
+<tr class="memdesc:ab8e88b1a12f247fde1450329c30fc668"><td class="mdescLeft">&#160;</td><td class="mdescRight">Variable que contiene todas las entidades generadas artificialmente y no pertenecientes al fichero de AutoCAD original durante el proceso de análisis.  <a href="#ab8e88b1a12f247fde1450329c30fc668"></a><br/></td></tr>
 <tr class="separator:ab8e88b1a12f247fde1450329c30fc668"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a75b50c346c2413b550eff968754596bc"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_file.html#a75b50c346c2413b550eff968754596bc">nombre_fichero_original</a></td></tr>
+<tr class="memdesc:a75b50c346c2413b550eff968754596bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Variable que contiene contiene el nombre del fichero original del cual se extrae la información.  <a href="#a75b50c346c2413b550eff968754596bc"></a><br/></td></tr>
 <tr class="separator:a75b50c346c2413b550eff968754596bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa2e6363d2a15679c1e0b3fc0ffca849b"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_file.html#aa2e6363d2a15679c1e0b3fc0ffca849b">fecha_fichero_original</a></td></tr>
+<tr class="memdesc:aa2e6363d2a15679c1e0b3fc0ffca849b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Variable que contiene la fecha de última modificación dle fichero original del cual se extrae la información.  <a href="#aa2e6363d2a15679c1e0b3fc0ffca849b"></a><br/></td></tr>
 <tr class="separator:aa2e6363d2a15679c1e0b3fc0ffca849b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Clase que contiene todas las entidades reconocidas y analizadas de un fichero de AutoCAD. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a0f33c9ee58fbb9c0873f852d1d40f7cd"></a>
 <div class="memitem">
 <div class="memproto">
@@ -95,6 +110,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Metodo que inicializa y vacia todas las variables de la clase para poder ser utilizada la instancia con un fichero nuevo o lanzar un nuevo proceso de decodificación. </p>
 
 </div>
 </div>
@@ -109,6 +126,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Variable que contiene todos las arcos (tipo <a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_arco.html" title="Clase que contiene los atributos de una entidad Arco de AutoCAD.">dwgArco</a>) analizados. </p>
+
 </div>
 </div>
 <a class="anchor" id="a38e21887bf6581f390fd2723fb7dcf57"></a>
@@ -120,6 +139,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Variable que contiene todas las capas (tipo <a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_capa.html" title="Clase que contiene los atributos de una Capa de AutoCAD.">dwgCapa</a>) analizadas. </p>
 
 </div>
 </div>
@@ -133,6 +154,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Variable que contiene todas las líneas (tipo <a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_linea.html" title="Clase que contiene los atributos de una entidad Linea de AutoCAD.">dwgLinea</a>) analizadas. </p>
+
 </div>
 </div>
 <a class="anchor" id="a7afba49de735355fca9bd6f4d3a640a4"></a>
@@ -144,6 +167,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Variable que contiene todas las polilineas (tipo <a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_polylinea.html" title="Clase que contiene los atributos de una entidad Polilinea de AutoCAD.">dwgPolylinea</a>) analizadas. </p>
 
 </div>
 </div>
@@ -157,6 +182,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Variable que contiene todos los puntos (tipo <a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_punto.html" title="Clase que contiene los atributos de una entidad Punto de AutoCAD.">dwgPunto</a>) analizados. </p>
+
 </div>
 </div>
 <a class="anchor" id="aa2e6363d2a15679c1e0b3fc0ffca849b"></a>
@@ -168,6 +195,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Variable que contiene la fecha de última modificación dle fichero original del cual se extrae la información. </p>
 
 </div>
 </div>
@@ -181,6 +210,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Variable que contiene contiene el nombre del fichero original del cual se extrae la información. </p>
+
 </div>
 </div>
 <a class="anchor" id="ab8e88b1a12f247fde1450329c30fc668"></a>
@@ -193,6 +224,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Variable que contiene todas las entidades generadas artificialmente y no pertenecientes al fichero de AutoCAD original durante el proceso de análisis. </p>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
@@ -201,7 +234,7 @@ Public Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Aug 16 2012 19:26:39 for dwgDecoder by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Aug 17 2012 12:56:26 for dwgDecoder by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.2
 </small></address>

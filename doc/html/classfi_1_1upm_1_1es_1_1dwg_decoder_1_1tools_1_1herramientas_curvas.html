@@ -29,6 +29,7 @@
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -55,13 +56,19 @@
 <div class="title">fi.upm.es.dwgDecoder.tools.herramientasCurvas Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Clase que implementa los metodos para el manipulado y conversión de curvas a segmentos de linea.  
+ <a href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1tools_1_1herramientas_curvas.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:abf71200a2eab40c3cdfb2cb9f147b3e6"><td class="memItemLeft" align="right" valign="top">static DBObjectCollection&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1tools_1_1herramientas_curvas.html#abf71200a2eab40c3cdfb2cb9f147b3e6">curvaAlineas</a> (Curve cur, int numSeg, BlockTable acBlkTbl, BlockTableRecord acBlkTblRec, Transaction t, ObjectId LayerId, <a class="el" href="classfi_1_1upm_1_1es_1_1dwg_decoder_1_1dwg_elementos_1_1dwg_file.html">dwgFile</a> dwfg)</td></tr>
+<tr class="memdesc:abf71200a2eab40c3cdfb2cb9f147b3e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Metodo que descompone una curva en un conjunto de segmentos de línea que aproximan o recubren la curva original.  <a href="#abf71200a2eab40c3cdfb2cb9f147b3e6"></a><br/></td></tr>
 <tr class="separator:abf71200a2eab40c3cdfb2cb9f147b3e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Clase que implementa los metodos para el manipulado y conversión de curvas a segmentos de linea. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="abf71200a2eab40c3cdfb2cb9f147b3e6"></a>
 <div class="memitem">
 <div class="memproto">
@@ -124,6 +131,21 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Metodo que descompone una curva en un conjunto de segmentos de línea que aproximan o recubren la curva original. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cur</td><td>Entidad curva que debe ser linealizada. </td></tr>
+    <tr><td class="paramname">numSeg</td><td>Número de líneas en las que tiene que ser partida la curva. </td></tr>
+    <tr><td class="paramname">acBlkTbl</td><td>Tabla de bloques de AutoCAD para buscar nuevos objetos y añadir nuevos objetos generados. </td></tr>
+    <tr><td class="paramname">acBlkTblRec</td><td>Tabla de registros de los bloques de AutoCAD para buscar nuevos objetos y añadir nuevos objetos generados. </td></tr>
+    <tr><td class="paramname">t</td><td>Transaccion abierta para manipular la tabla de bloques de AutoCAD. </td></tr>
+    <tr><td class="paramname">LayerId</td><td>Parámetro del tipo ObjectId que identifica la capa a la que tendrán que asociarse las nuevas líneas generadas por el proceso de descomposición de la curva. </td></tr>
+    <tr><td class="paramname">dwfg</td><td>Parámetro del tipo dwgFile donde se almacenaran las nuevas líneas creadas a partir del proceso de descomposición de la curva.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Devuelve una colección de entidades tipo linea bajo la clase DBObjectCollection. </dd></dl>
+
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
@@ -132,7 +154,7 @@ Static Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Aug 16 2012 19:26:39 for dwgDecoder by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Aug 17 2012 12:56:27 for dwgDecoder by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.2
 </small></address>

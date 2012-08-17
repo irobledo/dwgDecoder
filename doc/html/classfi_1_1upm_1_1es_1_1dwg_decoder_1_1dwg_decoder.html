@@ -29,6 +29,7 @@
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="namespaces.html"><span>Packages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -147,10 +148,13 @@ Static Private Attributes</h2></td></tr>
 <p>Metodo que contiene toda la lógica de interacción con el usuario final para realizar la configuración necesaria del proceso:<br/>
 <br/>
  </p>
-<p>1) Activación del log (s/n).<br/>
- 2) En caso afirmativo, activación de la información de debug.<br/>
- 3) Ruta del fichero donde se guardará la información obtenida de la base de datos de AutoCAD.<br/>
- 4) Selección manual de las capas a procesar (s/n) </p>
+<pre class="fragment">     1) Activación del log (s/n).&lt;br/&gt;
+     2) En caso afirmativo, activación de la información de debug.&lt;br/&gt;
+     3) Ruta del fichero donde se guardará la información obtenida de la base de datos de AutoCAD.&lt;br/&gt;
+     4) Selección manual de las capas a procesar (s/n)
+</pre><dl class="section return"><dt>Returns</dt><dd>Devuelve "Verdadero" si ha podido finalizar la configuración del usuario.<br/>
+ Devuelve "Falso" si el usuario ha cancelado la configuración o se ha producido un error.<br/>
+ </dd></dl>
 
 </div>
 </div>
@@ -623,7 +627,7 @@ Static Private Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Aug 16 2012 19:26:39 for dwgDecoder by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Aug 17 2012 12:56:26 for dwgDecoder by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.2
 </small></address>
